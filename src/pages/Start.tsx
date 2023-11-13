@@ -1,19 +1,21 @@
 import { Box, Button, Grid, TextField, MenuItem, InputAdornment, Snackbar, Alert, Switch } from "@mui/material";
-import { TIPO_SOLICITUD } from "../Constantes";
 import {IbasicInfo, IbasicVal} from "../interfaces/IbasicInfo";
 import EmailIcon from '@mui/icons-material/Email';
 import { useMask } from '@react-input/mask';
 import { useState } from 'react'
 import FormControlLabel from '@mui/material/FormControlLabel';
+import Icertificado from "../interfaces/Icertificado";
+import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 
 type Props = {
+    certificados:Icertificado[],
     data:IbasicInfo,
     startProcess(): void,
     handleChange(e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void,
     handleChangeSwitch(event: React.ChangeEvent<HTMLInputElement>):void
 }
 
-export default function Start({data, startProcess, handleChange, handleChangeSwitch}:Props)
+export default function Start({certificados, data, startProcess, handleChange, handleChangeSwitch}:Props)
 {
     const dniRef = useMask({ mask: '________', replacement: { _: /\d/ } });
     let emailRegex = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/ 
@@ -67,19 +69,20 @@ export default function Start({data, startProcess, handleChange, handleChangeSwi
     <Box component="form" sx={{p:2}} noValidate autoComplete="off">
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <TextField 
+                { certificados.length > 0 && (<TextField 
                     select 
                     name='solicitud'
                     label="Tipo de Solicitud" 
                     value={data.solicitud}
+                    //defaultValue={data.solicitud}
                     onChange={e=>handleChange(e)}
                     helperText="Seleccione el tipo de solicitud">
-                    {
-                        TIPO_SOLICITUD.map((option)=>(
+                    { 
+                        certificados?.map((option)=>(
                             <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
                         ))
                     }
-                </TextField>
+                </TextField>)}
             </Grid>
             <Grid item xs={12} sm={6}>
                 <TextField      
@@ -141,7 +144,7 @@ export default function Start({data, startProcess, handleChange, handleChangeSwi
                 Ingresar los datos solicitados
             </Alert>
         </Snackbar>
-        <Button onClick={handleClick}>Avanzar</Button>
+        <Button onClick={handleClick} variant="contained" size="large" endIcon={<PlayCircleFilledIcon />}>Avanzar</Button>
     </Box>
     )
 }

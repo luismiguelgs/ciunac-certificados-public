@@ -7,7 +7,7 @@ import { IfinData } from "../interfaces/IfinData"
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import DataDisplay from "../components/DataDisplay"
-import { firestore } from '../firebase';
+import { firestore } from '../services/firebase';
 import { collection, serverTimestamp, addDoc } from 'firebase/firestore'
 import { Irow } from "../interfaces/Irow"
 
@@ -17,7 +17,7 @@ type Props = {
   basicInfo:IbasicInfo,
   studentData:IstudentData,
   finData:IfinData
-  handleBack?: React.MouseEventHandler,
+  setActiveStep:React.Dispatch<React.SetStateAction<number>>
   constancia:string,
   data2010:Irow[]
 }
@@ -26,7 +26,7 @@ interface Condiciones{
   aceptar:boolean
 }
 
-export default function Finish({ basicInfo, studentData, finData, handleBack, constancia, data2010 }:Props)
+export default function Finish({ basicInfo, studentData, finData, setActiveStep, constancia, data2010 }:Props)
 {
   //base de datos
   const db_solicitudes = collection(firestore, 'solicitudes');
@@ -39,6 +39,10 @@ export default function Finish({ basicInfo, studentData, finData, handleBack, co
   const [open, setOpen] = React.useState<boolean>(false)
 
   const handleClose = () => setOpen(false)
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1)
+  }
 
   const handleChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCondiciones({
@@ -58,6 +62,8 @@ export default function Finish({ basicInfo, studentData, finData, handleBack, co
   const newItem  = async() =>{
     const data = {
       solicitud:basicInfo.solicitud,
+      estado:'NUEVO',
+      pago:+finData.pago,
       dni:basicInfo.dni,
       email:basicInfo.email,
       trabajador:basicInfo.trabajador,
@@ -73,7 +79,8 @@ export default function Finish({ basicInfo, studentData, finData, handleBack, co
       voucher:finData.imagen,
       numero_voucher:finData.voucher,
       fecha_pago: finData.fecha,
-      timeStamp:serverTimestamp()
+      creado:serverTimestamp(),
+      modificado:serverTimestamp()
     }
     let docRef = null
     try{

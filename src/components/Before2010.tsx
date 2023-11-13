@@ -13,13 +13,12 @@ import { CICLOS } from "../Constantes";
 type Props = {
     data: IstudentData,
     rows: Irow[],
-    agregarRows(r:Irow): void,
-    eliminarRows(i:number): void
+    setRows: React.Dispatch<React.SetStateAction<Irow[]>>
     open:boolean,
     handleClose():void
 }
 
-export default function Before2010({ data, rows, agregarRows, eliminarRows, open, handleClose }:Props)
+export default function Before2010({ data, rows, setRows, open, handleClose }:Props)
 {   
     //variables de prueba
     let idioma = data.idioma
@@ -27,6 +26,13 @@ export default function Before2010({ data, rows, agregarRows, eliminarRows, open
 
     let niveles: string[] = []
     let annos: string[] = []
+
+    const agregarRows = (row:Irow):void =>{
+        setRows([...rows,row])
+    }
+    const eliminarRows = (id:number):void =>{
+        setRows(rows.filter(r=>r.id !== id))
+    }
 
     const poblarAnnos = () =>{
         for (let index = 2000; index < 2010; index++) {
@@ -49,7 +55,6 @@ export default function Before2010({ data, rows, agregarRows, eliminarRows, open
             mes:formData.mes,
             profesor:formData.profesor
         }
-        //setRows([...rows,row])
         agregarRows(row)
         setFormData((prevFormData)=>({...prevFormData, profesor:''}))
     }
@@ -115,15 +120,12 @@ export default function Before2010({ data, rows, agregarRows, eliminarRows, open
         anno:'2009',
         profesor:''
     })
-
     const handleChange = (event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const {name, value} = event.target
         setFormData((prevFormData)=>({...prevFormData, [name]:value}))
     }
-    
     const profesorRef = useMask({ mask: '______________________________', replacement: { _: /^[a-zA-Z \u00C0-\u00FF]*$/ } });
 
-    //const [rows, setRows] = React.useState<Irow[]>([])
     const [index,setIndex] = React.useState<number>(0)
 
     return(

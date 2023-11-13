@@ -4,10 +4,11 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import {useState} from 'react';
 import { useMask } from '@react-input/mask';
 import { IfinData, IfinVal } from '../interfaces/IfinData';
-import {storage } from '../firebase';
+import {storage } from '../services/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import FolderIcon from '@mui/icons-material/Folder';
 import { IstudentData } from '../interfaces/IstudentData';
+import InputAdornment from '@mui/material/InputAdornment';
 
 type Props = {
     basicData: IstudentData
@@ -26,6 +27,7 @@ export default function FinInfo({finData,basicData,handleChange, changeImgFin, v
     const [enviar, setEnviar] = useState<boolean>(true)
 
     const voucherRef = useMask({ mask: '_______________', replacement: { _: /\d/ } });
+    const pagoRef = useMask({ mask: '_____', replacement: { _: /^[0-9.]*$/ } });
 
     const handleClick = () => {
         const name = data.name.split('.')
@@ -53,7 +55,7 @@ export default function FinInfo({finData,basicData,handleChange, changeImgFin, v
     }
 
     return (
-        <Box sx={{m:2,alignContent:'center'}}>
+        <Box sx={{m:1,alignContent:'center'}}>
             <Grid container spacing={2} >
                 <Grid item xs={12}>
                     <Alert severity="warning">
@@ -81,7 +83,6 @@ export default function FinInfo({finData,basicData,handleChange, changeImgFin, v
                         Luego de buscar el archivo <FolderIcon /> puede subirlo al servidor para su revisión <CloudUploadIcon />
                         </Alert>
                     }
-                    
                     <Button 
                         sx={{m:1, width:'80%'}} 
                         color='secondary' 
@@ -92,29 +93,48 @@ export default function FinInfo({finData,basicData,handleChange, changeImgFin, v
                         Subir Archivo
                     </Button>
                     <TextField
+                        autoComplete='off'
                         inputRef={voucherRef}
-                        sx={{mt:1,width:'80%'}}
+                        sx={{mt:2,width:'80%'}}
                         required
                         error={validation.voucher}
                         value={finData.voucher}
                         onChange={e=>handleChange(e)}
                         name="voucher"
                         label="Número de Voucher"
-                        helperText="Ingrese el número de voucher"
+                        helperText={ validation.voucher && "Ingrese el número de voucher"}
+                    />
+                    <TextField
+                        inputRef={pagoRef}
+                        sx={{mt:2,width:'80%'}}
+                        required
+                        error={validation.pago}
+                        value={finData.pago}
+                        onChange={e=>handleChange(e)}
+                        InputProps={{
+                            startAdornment: <InputAdornment position="start">S/</InputAdornment>,
+                        }}
+                        name="pago"
+                        label="Monto pagado"
+                        helperText={ validation.pago && "Ingrese el monto pagado / monto inválido"}
                     />
                     <TextField
                         type='date'
-                        sx={{mt:1, width:'80%'}}
+                        sx={{mt:2, width:'80%'}}
                         required
                         error={validation.fecha}
                         value={finData.fecha}
                         onChange={e=>handleChange(e)}
                         name="fecha"
-                        helperText="Ingrese la fecha de pago válida"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        label="Fecha de pago"
+                        helperText={ validation.fecha && "Ingrese la fecha de pago válida"}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    <Card sx={{ maxWidth: 345, p:1 }}>
+                    <Card sx={{ maxWidth: 345, p:2 }}>
                         <CardMedia
                             component="img"
                             alt="documento"
@@ -123,9 +143,6 @@ export default function FinInfo({finData,basicData,handleChange, changeImgFin, v
                         <CardContent>
                         </CardContent>
                     </Card>
-                </Grid>
-                <Grid item xs={12}>
-                    
                 </Grid>
             </Grid>
             <Snackbar open={ open } autoHideDuration={3000} onClose={handleClose}>

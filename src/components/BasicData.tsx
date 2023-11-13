@@ -1,4 +1,5 @@
-import { Box, TextField,MenuItem, InputAdornment, Grid, Alert, Snackbar, FormControlLabel, Switch } from '@mui/material'
+import { TextField,MenuItem, InputAdornment, Grid, Alert, Snackbar, FormControlLabel, Switch } from '@mui/material'
+import Box from '@mui/material/Box';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { NIVEL,IDIOMA, FACULTADES } from '../Constantes';
 import { useState } from 'react'
@@ -8,13 +9,13 @@ import { IstudentData, IstudentVal } from '../interfaces/IstudentData';
 
 type Props = {
     data: IstudentData,
-    handleChange(e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void,
-    val: IstudentVal,
-    checked: boolean
-    handleChangeSwitch():void
+    setData:React.Dispatch<React.SetStateAction<IstudentData>>,
+    validation:IstudentVal,
+    checked:boolean,
+    setChecked:React.Dispatch<React.SetStateAction<boolean>>,
 }
 
-export default function BasicData({data, handleChange, val, checked, handleChangeSwitch}:Props)
+export default function BasicData({data, setData, validation,checked,setChecked}:Props)
 {
     const apellidoRef = useMask({ mask: '________________________________________', replacement: { _: /^[a-zA-Z \u00C0-\u00FF]*$/ } })
     const nombreRef = useMask({ mask: '________________________________________', replacement: { _: /^[a-zA-Z \u00C0-\u00FF]*$/ } })
@@ -26,9 +27,17 @@ export default function BasicData({data, handleChange, val, checked, handleChang
 
     //cerrar el snackbar informativo
     const handleClose = () => setOpen(false);
+
+    const handleChange = (event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const {name, value} = event.target
+        setData((prevFormData)=>({...prevFormData, [name]:value}))
+    }
+    //datos de alumno unac
+    const handleChangeSwitch = () => setChecked(!checked)
+
     
     return(
-        <Box component="form" sx={{pt:2,mt:2}} noValidate autoComplete="off">
+        <Box component="form" sx={{pt:1,mt:1}} noValidate autoComplete="off">
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Alert severity="warning">
@@ -42,11 +51,11 @@ export default function BasicData({data, handleChange, val, checked, handleChang
                         required
                         fullWidth
                         name='apellidos'
-                        error={val.apellidos}
+                        error={validation.apellidos}
                         value={data.apellidos}
                         onChange={e=>handleChange(e)}
                         label="Apellidos"
-                        helperText={val.apellidos && "Campo requerido"}
+                        helperText={validation.apellidos && "Campo requerido"}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -56,11 +65,11 @@ export default function BasicData({data, handleChange, val, checked, handleChang
                         required
                         fullWidth
                         name='nombres'
-                        error={val.nombres}
+                        error={validation.nombres}
                         value={data.nombres}
                         onChange={e=>handleChange(e)}
                         label="Nombres"
-                        helperText={val.nombres && "Campo requerido"}
+                        helperText={validation.nombres && "Campo requerido"}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -104,7 +113,7 @@ export default function BasicData({data, handleChange, val, checked, handleChang
                         required
                         fullWidth
                         name='celular'
-                        error={val.celular}
+                        error={validation.celular}
                         value={data.celular}
                         onChange={e=>handleChange(e)}
                         type='text'
@@ -118,7 +127,7 @@ export default function BasicData({data, handleChange, val, checked, handleChang
                             ),
                         }}
                         variant="outlined"
-                        helperText={val.celular && "Campo requerido, mínimo 9 dígitos"}
+                        helperText={validation.celular && "Campo requerido, mínimo 9 dígitos"}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -152,12 +161,12 @@ export default function BasicData({data, handleChange, val, checked, handleChang
                         inputRef={codigoRef}
                         disabled={!checked}
                         sx={{m:1,width:'85%'}}
-                        error={val.codigo}
+                        error={validation.codigo}
                         name="codigo"
                         label="Código de Alumno"
                         value={data.codigo}
                         onChange={e=>handleChange(e)}
-                        helperText={val.codigo && "Ingresar su código de alumno"}
+                        helperText={validation.codigo && "Ingresar su código de alumno"}
                     />
                 </Grid>
             </Grid>

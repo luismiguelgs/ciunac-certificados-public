@@ -1,14 +1,17 @@
 import './App.css'
-import Proceso from './components/Proceso'
+import Proceso from './pages/Proceso'
 import Start from './pages/Start'
 import { Toolbar, Box, AppBar, Typography, IconButton } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from 'react'
 import {IbasicInfo} from './interfaces/IbasicInfo'
+import Preloader from './components/Preloader';
+import Icertificado from './interfaces/Icertificado';
 
 function App() 
 {
   //variable de datos iniciales
+  const [certificados, setCertificados] = useState<Icertificado[]>([]);
   const [start, setStart] = useState<boolean>(true)
   const [title, setTitle] = useState<string>('CIUNAC - Solicitudes')
   const [basicInfo, setBasicInfo] = useState<IbasicInfo>({
@@ -37,6 +40,7 @@ function App()
 
   return(
       <Box sx={{ flexGrow: 1 }}>
+        <Preloader setData={setCertificados}/>
         <AppBar position="static" style={{width:'100%'}}>
           <Toolbar>
             <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }} >
@@ -49,6 +53,7 @@ function App()
         </AppBar>
         { start && 
           <Start 
+            certificados={certificados}
             data={basicInfo} 
             startProcess={startProcess} 
             handleChange={handleChangeBasicInfo} 

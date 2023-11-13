@@ -1,11 +1,5 @@
 import { styled } from '@mui/material/styles';
 
-export const TIPO_SOLICITUD = [
-    {value:'CERTIFICADO_DE_ESTUDIO',label:'CERTIFICADO DE ESTUDIO'},
-    {value:'DUPLICADO_DE_CERTIFICADO',label:'DUPLICADO DE CERTIFICADO'},
-    {value:'CONSTANCIA_DE_NOTAS',label:'CONSTANCIA DE NOTAS'},
-    {value:'CONSTANCIA_DE_MATRICULA',label:'CONSTANCIA DE MATRICULA'},
-]
 export const IDIOMA = [
     {value:'INGLES',label:'INGLÉS'},
     {value:'ITALIANO',label:'ITALIANO'},

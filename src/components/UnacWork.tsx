@@ -1,12 +1,11 @@
 import { Box, Alert, Button, Snackbar, LinearProgress, Card, CardMedia, CardContent, Grid } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { VisuallyHiddenInput } from '../Constantes';
-import {storage } from '../firebase';
+import {storage } from '../services/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { useState } from 'react';
 import FolderIcon from '@mui/icons-material/Folder';
 import { IstudentData } from '../interfaces/IstudentData';
-
 
 type Props = {
     basicData: IstudentData,
@@ -28,7 +27,6 @@ export default function UnacWork({dataStr, changeDataStr , open, handleClose, ba
         const uploadTask = uploadBytesResumable(storageRef, data);
         uploadTask.on('state_changed', (snapshot)=>{
             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            //console.log('Upload is ' + progress + '% done');
             setEnviar(true)
             setProgress(progress)
           },(error)=>{
@@ -48,28 +46,26 @@ export default function UnacWork({dataStr, changeDataStr , open, handleClose, ba
     }
 
     return(
-        <Box sx={{m:2}}>
+        <Box sx={{mt:1}}>
             <Grid justifyContent={'center'} container spacing={2} >
-                <Grid item xs={12}>
-                    
-                </Grid>
                 <Grid item xs={12} sm={6}>
                     <Alert severity="warning">
-                        Trabajadores UNAC CAS y NOMBRADOS tienen un descuento del  100% presentando Constancia de 
-                        Trabajador(Original) otorgado por la oficina de personal. !PRESENTAR TODA LA DOCUMENTACIÓN EN
-                        FOLDER MANILA SIN FASTENERS!
+                        Trabajadores UNAC CAS y NOMBRADOS tienen un descuento del 100%, PROFESORES tienen un 80% 
+                        de descuento. Presentando Constancia de Trabajador(Original) otorgado por la oficina de
+                        personal. !PRESENTAR TODA LA DOCUMENTACIÓN EN FOLDER MANILA SIN FASTENERS!
                     </Alert>
-                    <LinearProgress variant="determinate" value={progress} sx={{mt:2}} />
+                    <LinearProgress variant="determinate" value={progress} sx={{mt:1}} />
                     <Button 
                         component="label"
-                        sx={{m:3, width:'80%'}}
+                        sx={{m:2, width:'80%'}}
                         variant="contained"
                         startIcon={<FolderIcon />}>
                             Buscar Archivo
                             <VisuallyHiddenInput type="file" accept='image/* , application/pdf,' onChange={e=> handleChange(e)}/>
                     </Button>
                     <Alert severity="info" sx={{mt:1}}>
-                        Luego de buscar el archivo <FolderIcon /> puede subirlo al servidor para su revisión <CloudUploadIcon />
+                        Luego de buscar el archivo <FolderIcon /> puede subirlo al servidor para su revisión 
+                        <CloudUploadIcon /> se acepta formatos *.jpg *.png *.pdf
                     </Alert>
                     <Button 
                         sx={{mt:1, width:'80%'}} 
@@ -85,7 +81,7 @@ export default function UnacWork({dataStr, changeDataStr , open, handleClose, ba
                     </Alert>
                 </Grid>
                 <Grid item xs={12} sm={6} >
-                    <Card sx={{ maxWidth: 345 }}>
+                    <Card sx={{ maxWidth: 345, p:2 }}>
                         <CardMedia
                             component="img"
                             alt="documento"
@@ -95,13 +91,10 @@ export default function UnacWork({dataStr, changeDataStr , open, handleClose, ba
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item xs={12}>
-                    
-                </Grid>
             </Grid>
             <Snackbar open={ open } autoHideDuration={3000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-                    Ingresar los datos solicitados
+                    Ingresar los datos solicitados, subir el archivo correspondiente
                 </Alert>
             </Snackbar>
         </Box>
