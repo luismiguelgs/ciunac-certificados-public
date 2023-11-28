@@ -3,22 +3,24 @@ import {
     IconButton, Snackbar
 } from "@mui/material"
 import React from "react"
-import { MES }  from '../Constantes'
+import { MES }  from '../services/Constantes'
 import { useMask } from '@react-input/mask';
 import {Irow, IformData} from "../interfaces/Irow";
 import DeleteIcon from "@mui/icons-material/Delete"
 import { IstudentData } from "../interfaces/IstudentData";
-import { CICLOS } from "../Constantes";
+import { CICLOS } from "../services/Constantes";
+import { Itexto } from "../interfaces/Itexto";
 
 type Props = {
     data: IstudentData,
     rows: Irow[],
     setRows: React.Dispatch<React.SetStateAction<Irow[]>>
     open:boolean,
-    handleClose():void
+    handleClose():void,
+    textos:Itexto[]
 }
 
-export default function Before2010({ data, rows, setRows, open, handleClose }:Props)
+export default function Before2010({ data, rows, setRows, open, handleClose,textos }:Props)
 {   
     //variables de prueba
     let idioma = data.idioma
@@ -131,8 +133,7 @@ export default function Before2010({ data, rows, setRows, open, handleClose }:Pr
     return(
         <Box sx={{m:1}}>
             <Alert sx={{m:1}} severity="warning">
-                En caso tenga una matrícula antes del año 2009 hacia atrás, deberá ingresar los datos requeridos,
-                del ciclo que cursó, el mes, año; de ser posible el profesor.     
+                {textos.find(objeto=> objeto.titulo === 'texto_1_2010')?.texto}
             </Alert>
             <TextField
                 select

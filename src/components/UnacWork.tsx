@@ -1,21 +1,25 @@
 import { Box, Alert, Button, Snackbar, LinearProgress, Card, CardMedia, CardContent, Grid } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { VisuallyHiddenInput } from '../Constantes';
+import { VisuallyHiddenInput } from '../services/Constantes';
 import {storage } from '../services/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { useState } from 'react';
 import FolderIcon from '@mui/icons-material/Folder';
 import { IstudentData } from '../interfaces/IstudentData';
+import { Itexto } from '../interfaces/Itexto';
+import { IbasicInfo } from '../interfaces/IbasicInfo';
 
 type Props = {
     basicData: IstudentData,
     dataStr: string,
-    changeDataStr(data:string):void
+    changeDataStr(data:string):void,
     open: boolean,
-    handleClose():void
+    handleClose():void,
+    textos:Itexto[],
+    basicInfo:IbasicInfo
 }
 
-export default function UnacWork({dataStr, changeDataStr , open, handleClose, basicData}:Props)
+export default function UnacWork({dataStr, changeDataStr , open, handleClose, basicData, textos, basicInfo}:Props)
 {
     const [data,setData] = useState<any>([])
     const [progress, setProgress] = useState<number>(0)
@@ -23,7 +27,7 @@ export default function UnacWork({dataStr, changeDataStr , open, handleClose, ba
     
     const handleClick = () => {
         const name = data.name.split('.')
-        const storageRef = ref(storage, `trabajadores/${basicData.celular}-${basicData.idioma}-${basicData.nivel}.${name[1]}`);
+        const storageRef = ref(storage, `trabajadores/${basicInfo.dni}-${basicData.idioma}-${basicData.nivel}.${name[1]}`);
         const uploadTask = uploadBytesResumable(storageRef, data);
         uploadTask.on('state_changed', (snapshot)=>{
             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -50,9 +54,7 @@ export default function UnacWork({dataStr, changeDataStr , open, handleClose, ba
             <Grid justifyContent={'center'} container spacing={2} >
                 <Grid item xs={12} sm={6}>
                     <Alert severity="warning">
-                        Trabajadores UNAC CAS y NOMBRADOS tienen un descuento del 100%, PROFESORES tienen un 80% 
-                        de descuento. Presentando Constancia de Trabajador(Original) otorgado por la oficina de
-                        personal. !PRESENTAR TODA LA DOCUMENTACIÓN EN FOLDER MANILA SIN FASTENERS!
+                        {textos.find(objeto=> objeto.titulo === 'texto_1_trabajador')?.texto}
                     </Alert>
                     <LinearProgress variant="determinate" value={progress} sx={{mt:1}} />
                     <Button 

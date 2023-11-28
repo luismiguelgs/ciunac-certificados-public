@@ -10,6 +10,7 @@ import DataDisplay from "../components/DataDisplay"
 import { firestore } from '../services/firebase';
 import { collection, serverTimestamp, addDoc } from 'firebase/firestore'
 import { Irow } from "../interfaces/Irow"
+import { Itexto } from "../interfaces/Itexto"
 
 
 type Props = {
@@ -19,14 +20,15 @@ type Props = {
   finData:IfinData
   setActiveStep:React.Dispatch<React.SetStateAction<number>>
   constancia:string,
-  data2010:Irow[]
+  data2010:Irow[],
+  textos:Itexto[]
 }
 interface Condiciones{
   data:boolean,
   aceptar:boolean
 }
 
-export default function Finish({ basicInfo, studentData, finData, setActiveStep, constancia, data2010 }:Props)
+export default function Finish({ basicInfo, studentData, finData, setActiveStep, constancia, data2010, textos }:Props)
 {
   //base de datos
   const db_solicitudes = collection(firestore, 'solicitudes');
@@ -127,22 +129,13 @@ export default function Finish({ basicInfo, studentData, finData, setActiveStep,
               </Box>
 
               <Alert sx={{mt:2}} severity="warning">
-                Cualquier defecto u omisión en la solicitud podrá ser subsanada dentro del plazo de 48 horas.  
-                Transcurrido 30 dias naturales, y de no subsanarse las observaciones se declara el abandono 
-                del procedimento.
+                {textos.find(objeto=> objeto.titulo === 'texto_1_final')?.texto}
               </Alert>
               <Alert sx={{mt:2}} severity="info">
-                Cada trámite de certificado se realizará de manera individual, dependiendo el nivel que solicitará  
-                según usted lo requiera, por lo cual presentará por básico, intermedio o avanzado su respectiva 
-                solicitud individual de cada uno, especificando el nivel con sus respectivos voucher de pago de 50 
-                soles por nivel completo y demás requisitos.  Si requiere los 3 niveles se presentará 3 solicitudes 
-                cons sus respectivos vouchers.
+                {textos.find(objeto=> objeto.titulo === 'texto_1_disclamer')?.texto}
               </Alert>
               <Alert sx={{mt:2}} severity="info">
-                Una vez iniciada la solicitud, el trámite durará 10 dias hábiles, cumplido el tiempo establecido 
-                se comunicará con el encargado para confirmar que el documento este listo para recoger, de estar listo 
-                deberá presentarse el titular con su cargo y dni, de no poder el titular, podrá recogerlo otra persona 
-                con carta poder simble y los documentos necesarios. 
+                {textos.find(objeto=> objeto.titulo === 'texto_2_disclamer')?.texto}
               </Alert>
               <Box sx={{display:'flex',flexDirection:'column',pt:2}}>
                 <Box sx={{flex: '1 1 auto'}}>

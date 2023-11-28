@@ -69,16 +69,22 @@ export function validationFinData(
     let voucher:boolean
     let fecha:boolean
     let pago:boolean
-  
-    if(data.imagen === uploadLogo){
+
+    //val imagen upload
+    if(trabajador){
+      imagen = true
+    }else{
+      if(data.imagen === uploadLogo){
         imagen = false
         setOpen(true)
         setValidation((pfv)=>({...pfv, imagen:true}))
-    }else{
+      }else{
         imagen = true
         setOpen(true)
         setValidation((pfv)=>({...pfv, imagen:false}))
+      }
     }
+    //val monto pagado
     if(trabajador){
       if(data.pago === '' || +data.pago < 0 || +data.pago > 100){
         pago = false
@@ -100,23 +106,31 @@ export function validationFinData(
         setValidation((pfv)=>({...pfv, pago:false}))
       }
     }
-    
-    if(data.voucher === '' || data.voucher.length < 15){
+    //val voucher
+    if(trabajador){
+      voucher = true
+    }else{
+      if(data.voucher === '' || data.voucher.length < 15){
         voucher = false
         setOpen(true)
         setValidation((pfv)=>({...pfv, voucher:true}))
-    }
-    else{
+      }
+      else{
         voucher = true
         setOpen(false)
         setValidation((pfv)=>({...pfv, voucher:false}))
+      }
     }
-    if(data.fecha === ''){
+    //val fecha
+    if(trabajador){
+      fecha = true
+    }else{
+      if(data.fecha === ''){
         fecha = false
         setOpen(true)
         setValidation((pfv)=>({...pfv, fecha:true}))
-    }
-    else{
+      }
+      else{
         if(new Date() < new Date(data.fecha)){
             fecha = false
             setOpen(true)
@@ -127,6 +141,7 @@ export function validationFinData(
             fecha = true
             setValidation((pfv)=>({...pfv, fecha:false}))
         }
+      }
     }
     return imagen && voucher && fecha && pago
 }

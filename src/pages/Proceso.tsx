@@ -6,19 +6,25 @@ import BasicData from '../components/BasicData'
 import UnacWork from '../components/UnacWork'
 import FinInfo from '../components/FinInfo'
 import Before2010 from '../components/Before2010'
-import { STEPS } from '../Constantes'
+import { STEPS } from '../services/Constantes'
 import { IfinData, IfinVal } from '../interfaces/IfinData'
 import { Irow } from '../interfaces/Irow'
 import { IstudentData, IstudentVal } from '../interfaces/IstudentData'
 import uploadLogo from '../assets/upload.svg'
 import {IbasicInfo } from '../interfaces/IbasicInfo'
 import { validationBasicData, validationFinData } from '../services/validation'
+import { Itexto } from '../interfaces/Itexto'
+import { Ifacultad } from '../interfaces/Ifacultad'
+import { Icurso } from '../interfaces/Icurso'
 
 type Props = {
   basicInfo: IbasicInfo
+  textos:Itexto[],
+  facultades:Ifacultad[],
+  cursos:Icurso[]
 }
 
-export default function Proceso({basicInfo}:Props)
+export default function Proceso({basicInfo, textos, facultades, cursos}:Props)
 {
   //estado de snackbar informativo
   const [open, setOpen] = React.useState(false);
@@ -32,7 +38,7 @@ export default function Proceso({basicInfo}:Props)
     celular:'',
     idioma:'INGLES',
     nivel:'BASICO',
-    facultad:'CIENCIAS_DE_LA_SALUD',
+    facultad:'PAR',
     codigo:''
   })
   const [basicVal, setBasicVal] = useState<IstudentVal>({
@@ -167,16 +173,20 @@ return (
             basicInfo={basicInfo} 
             studentData={basicData} 
             finData={finData} 
+            textos={textos}
             constancia={constanciaTU}
             data2010={rows} />
         ) : (
           <React.Fragment>
             { activeStep === 0 && 
               <BasicData
+                facultades={facultades}
                 data={basicData} 
+                cursos={cursos}
                 setData={setBasicData}
                 validation={basicVal} 
                 checked={checked}
+                textos={textos}
                 setChecked={setChecked}
               />}
             { activeStep === 1 && 
@@ -184,6 +194,8 @@ return (
                 dataStr={constanciaTU} 
                 changeDataStr={changeDataStr} 
                 open={open} 
+                basicInfo={basicInfo}
+                textos={textos}
                 handleClose={handleClose} 
                 basicData={basicData}/>}
            
@@ -192,6 +204,7 @@ return (
                 data={basicData} 
                 rows={rows} 
                 setRows={setRows}
+                textos={textos}
                 open={open}
                 handleClose={handleClose}
               />}
@@ -203,7 +216,9 @@ return (
                 changeImgFin={handleChangeImg}
                 handleChange={handleChangeFinData} 
                 validation={finVal}
+                textos={textos}
                 open={open}
+                basicInfo={basicInfo}
                 handleClose={handleClose}
               />}
             

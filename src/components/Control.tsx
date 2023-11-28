@@ -2,7 +2,7 @@ import React from "react"
 import { Box, Button } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { STEPS } from "../Constantes";
+import { STEPS } from "../services/Constantes";
 import DialogAlert from "./DialogAlert";
 
 type Props = {

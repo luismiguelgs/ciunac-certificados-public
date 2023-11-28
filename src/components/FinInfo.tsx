@@ -1,5 +1,5 @@
 import { Box, Alert, Button, TextField,Grid, Snackbar, LinearProgress, Card, CardMedia, CardContent } from '@mui/material'
-import { VisuallyHiddenInput } from '../Constantes';
+import { VisuallyHiddenInput } from '../services/Constantes';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import {useState} from 'react';
 import { useMask } from '@react-input/mask';
@@ -9,18 +9,22 @@ import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import FolderIcon from '@mui/icons-material/Folder';
 import { IstudentData } from '../interfaces/IstudentData';
 import InputAdornment from '@mui/material/InputAdornment';
+import { Itexto } from '../interfaces/Itexto';
+import { IbasicInfo } from '../interfaces/IbasicInfo';
 
 type Props = {
-    basicData: IstudentData
+    basicData: IstudentData,
     finData: IfinData,
     handleChange(e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void,
-    changeImgFin(img:string):void
+    changeImgFin(img:string):void,
     validation: IfinVal,
     open:boolean,
-    handleClose():void
+    handleClose():void,
+    textos:Itexto[],
+    basicInfo:IbasicInfo
 }
 
-export default function FinInfo({finData,basicData,handleChange, changeImgFin, validation, open, handleClose}:Props)
+export default function FinInfo({finData,basicData,handleChange, changeImgFin, validation, open, handleClose, textos, basicInfo}:Props)
 {
     const [data,setData] = useState<any>([])
     const [progress, setProgress] = useState<number>(0)
@@ -31,7 +35,7 @@ export default function FinInfo({finData,basicData,handleChange, changeImgFin, v
 
     const handleClick = () => {
         const name = data.name.split('.')
-        const storageRef = ref(storage, `vouchers/${basicData.celular}-${basicData.idioma}-${basicData.nivel}.${name[1]}`);
+        const storageRef = ref(storage, `vouchers/${basicInfo.dni}-${basicData.idioma}-${basicData.nivel}.${name[1]}`);
         const uploadTask = uploadBytesResumable(storageRef, data);
         uploadTask.on('state_changed', (snapshot)=>{
             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -59,9 +63,7 @@ export default function FinInfo({finData,basicData,handleChange, changeImgFin, v
             <Grid container spacing={2} >
                 <Grid item xs={12}>
                     <Alert severity="warning">
-                        Recibo ORIGINAL de SCOTIABANK. En caso de pagar por ventanilla SERA AL SERVICIO 112, y si el pago 
-                        será por aplicativo PONDRA EMPRESA: UNIV DEL CALLAO / SERVICIO: CENTRO DE IDIOMAS EN CASO SEA VIRTUAL 
-                        PRESENTARÁ 2 IMPRESIONES.
+                        {textos.find(objeto=> objeto.titulo === 'texto_1_pago')?.texto}
                     </Alert>
                 </Grid>
                 <Grid item xs={12} sm={6}>

@@ -1,10 +1,13 @@
 import { TextField,MenuItem, InputAdornment, Grid, Alert, Snackbar, FormControlLabel, Switch } from '@mui/material'
 import Box from '@mui/material/Box';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import { NIVEL,IDIOMA, FACULTADES } from '../Constantes';
+import { NIVEL} from '../services/Constantes';
 import { useState } from 'react'
 import { useMask } from '@react-input/mask';
 import { IstudentData, IstudentVal } from '../interfaces/IstudentData';
+import { Itexto } from '../interfaces/Itexto';
+import { Ifacultad } from '../interfaces/Ifacultad';
+import { Icurso } from '../interfaces/Icurso';
 
 
 type Props = {
@@ -13,9 +16,12 @@ type Props = {
     validation:IstudentVal,
     checked:boolean,
     setChecked:React.Dispatch<React.SetStateAction<boolean>>,
+    textos:Itexto[],
+    facultades:Ifacultad[],
+    cursos:Icurso[]
 }
 
-export default function BasicData({data, setData, validation,checked,setChecked}:Props)
+export default function BasicData({data, setData, validation,checked,setChecked,textos,facultades, cursos}:Props)
 {
     const apellidoRef = useMask({ mask: '________________________________________', replacement: { _: /^[a-zA-Z \u00C0-\u00FF]*$/ } })
     const nombreRef = useMask({ mask: '________________________________________', replacement: { _: /^[a-zA-Z \u00C0-\u00FF]*$/ } })
@@ -41,7 +47,7 @@ export default function BasicData({data, setData, validation,checked,setChecked}
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Alert severity="warning">
-                        La constancia saldrá en minúsculas, si tus datos llevan tilde colocarla. 
+                        {textos.find(objeto=> objeto.titulo === 'texto_1_basico')?.texto}
                     </Alert>
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -73,7 +79,7 @@ export default function BasicData({data, setData, validation,checked,setChecked}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    <TextField 
+                    { cursos && <TextField 
                         select 
                         sx={{width:'85%'}}
                         name='idioma'
@@ -83,11 +89,11 @@ export default function BasicData({data, setData, validation,checked,setChecked}
                         label="Idioma"
                         helperText="Seleccione el idioma">
                         {
-                            IDIOMA.map((option)=>(
+                            cursos.map((option)=>(
                                 <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
                             ))
                         }
-                    </TextField>
+                    </TextField>}
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <TextField
@@ -137,24 +143,25 @@ export default function BasicData({data, setData, validation,checked,setChecked}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    <TextField
-                        select
-                        disabled={!checked}
-                        sx={{m:1,width:'85%'}}
-                        name="facultad"
-                        label="Facultad"
-                        value={data.facultad}
-                        onChange={e=>handleChange(e)}
-                        helperText="Seleccionar facultad"
-                    >
-                        {
-                            FACULTADES.map((option) => (
-                                <MenuItem key={option.value} value={option.value}>
-                                    {option.label}
-                                </MenuItem>
-                            ))
-                        }
-                    </TextField>
+                    {   facultades && <TextField
+                            select
+                            disabled={!checked}
+                            sx={{m:1,width:'85%'}}
+                            name="facultad"
+                            label="Facultad"
+                            value={data.facultad}
+                            onChange={e=>handleChange(e)}
+                            helperText="Seleccionar facultad"
+                        >
+                            {
+                                facultades?.map((option) => (
+                                    <MenuItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </MenuItem>
+                                ))
+                            }
+                        </TextField>
+                    }
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <TextField

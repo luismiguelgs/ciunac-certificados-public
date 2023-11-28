@@ -6,16 +6,20 @@ import { useState } from 'react'
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Icertificado from "../interfaces/Icertificado";
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
+import { Itexto } from "../interfaces/Itexto";
+import { Dialog, DialogContent, CircularProgress, Typography } from '@mui/material';
 
 type Props = {
     certificados:Icertificado[],
     data:IbasicInfo,
+    textos:Itexto[],
     startProcess(): void,
     handleChange(e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void,
-    handleChangeSwitch(event: React.ChangeEvent<HTMLInputElement>):void
+    handleChangeSwitch(event: React.ChangeEvent<HTMLInputElement>):void,
+    openL:boolean
 }
 
-export default function Start({certificados, data, startProcess, handleChange, handleChangeSwitch}:Props)
+export default function Start({certificados, data, textos, startProcess, handleChange, handleChangeSwitch, openL}:Props)
 {
     const dniRef = useMask({ mask: '________', replacement: { _: /\d/ } });
     let emailRegex = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/ 
@@ -119,9 +123,7 @@ export default function Start({certificados, data, startProcess, handleChange, h
             </Grid>
             <Grid item xs={12} sm={6}>
                 <Alert severity="warning">
-                    En caso sea trabajador y acceder al 100% de descuento, deberá presentar la Constancia de 
-                    Trabajador(Original) escaneada otorgado por la oficina de personal. En caso contrario dejar 
-                    desactivado esta opción.
+                    {textos.find(objeto=> objeto.titulo === 'texto_1_inicio')?.texto}
                 </Alert>
                 <FormControlLabel
                     control={<Switch onChange={handleChangeSwitch} checked={data.trabajador} name="trabajador"/>}
@@ -130,8 +132,7 @@ export default function Start({certificados, data, startProcess, handleChange, h
             </Grid>
             <Grid item xs={12} sm={6}>
                 <Alert severity="warning">
-                    En caso tenga matrículas en ciclos anteriores al año <b>2010</b> deberá proporcionar información 
-                    en que año y mes, cursó dicho ciclo. En caso contrario dejar desactivado esta opción.
+                    {textos.find(objeto=> objeto.titulo === 'texto_2_inicio')?.texto}
                 </Alert>
                 <FormControlLabel
                     control={<Switch onChange={handleChangeSwitch} checked={data.antiguo} name="antiguo"/>}
@@ -145,6 +146,13 @@ export default function Start({certificados, data, startProcess, handleChange, h
             </Alert>
         </Snackbar>
         <Button onClick={handleClick} variant="contained" size="large" endIcon={<PlayCircleFilledIcon />}>Avanzar</Button>
+        <Dialog open={openL} onClose={() => setOpen(false)}>
+            <DialogContent>
+              <CircularProgress />
+                {/* Opcional: Agregar un mensaje de carga */}
+                {<Typography>Cargando...</Typography> }
+            </DialogContent>
+        </Dialog>
     </Box>
     )
 }
