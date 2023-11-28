@@ -2,12 +2,13 @@ import { Box, Button, Grid, TextField, MenuItem, InputAdornment, Snackbar, Alert
 import {IbasicInfo, IbasicVal} from "../interfaces/IbasicInfo";
 import EmailIcon from '@mui/icons-material/Email';
 import { useMask } from '@react-input/mask';
-import { useState } from 'react'
+import React, { useState } from 'react'
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Icertificado from "../interfaces/Icertificado";
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import { Itexto } from "../interfaces/Itexto";
 import { Dialog, DialogContent, CircularProgress, Typography } from '@mui/material';
+import ReCAPTCHA from "react-google-recaptcha";
 
 type Props = {
     certificados:Icertificado[],
@@ -21,10 +22,12 @@ type Props = {
 
 export default function Start({certificados, data, textos, startProcess, handleChange, handleChangeSwitch, openL}:Props)
 {
+    const captchaRef = React.useRef<ReCAPTCHA>(null)
     const dniRef = useMask({ mask: '________', replacement: { _: /\d/ } });
     let emailRegex = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/ 
     let dni:boolean
     let email:boolean
+    let captcha:boolean
 
     const [val, setVal] = useState<IbasicVal>({
         dni:false,email:false
@@ -66,7 +69,19 @@ export default function Start({certificados, data, textos, startProcess, handleC
             setOpen(!dni)
             setVal((prevBasicVal)=>({...prevBasicVal, dni:false}))
         }
-        return email && dni
+        const captchaValue = captchaRef.current?.getValue()
+        if(!captchaValue){
+            captcha = false
+            setOpen(!captcha)
+        }else{
+            captcha = true
+            setOpen(!captcha)
+        }
+        return email && dni && captcha
+    }
+    //Recaptcha
+    const onChange =(value:any) =>{
+        console.log("Captcha value:" + value);
     }
 
     return (
@@ -138,6 +153,15 @@ export default function Start({certificados, data, textos, startProcess, handleC
                     control={<Switch onChange={handleChangeSwitch} checked={data.antiguo} name="antiguo"/>}
                     label="Matriculado anterior al año 2010" 
                 />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+            </Grid>
+            <Grid item xs={12} sm={4}>
+                <Box sx={{ alignContent:'center',alignItems:'center', mb:1, display:'flex', flexDirection:'column'}} >
+                    <ReCAPTCHA sitekey={import.meta.env.VITE_APP_SITE_KEY} onChange={onChange} ref={captchaRef} />
+                </Box>
+            </Grid>
+            <Grid item xs={12} sm={4}>
             </Grid>
         </Grid>
         <Snackbar open={ open } autoHideDuration={3000} onClose={handleClose}>
