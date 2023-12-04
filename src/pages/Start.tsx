@@ -9,6 +9,14 @@ import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import { Itexto } from "../interfaces/Itexto";
 import { Dialog, DialogContent, CircularProgress, Typography } from '@mui/material';
 import ReCAPTCHA from "react-google-recaptcha";
+import DataTable from "../components/DataTable";
+
+
+const columns: IColumn[] = [
+    { id: 'label', label: 'Certificado', minWidth: 150 },
+    { id: 'precio', label: 'Precio S/', minWidth: 120 },
+];
+
 
 type Props = {
     certificados:Icertificado[],
@@ -154,14 +162,16 @@ export default function Start({certificados, data, textos, startProcess, handleC
                     label="Matriculado anterior al año 2010" 
                 />
             </Grid>
-            <Grid item xs={12} sm={4}>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-                <Box sx={{ alignContent:'center',alignItems:'center', mb:1, display:'flex', flexDirection:'column'}} >
+            <Grid item xs={12} sm={6}>
+                <Box sx={{ alignContent:'center',alignItems:'center', p:3, display:'flex', flexDirection:'column'}} >
                     <ReCAPTCHA sitekey={import.meta.env.VITE_APP_SITE_KEY} onChange={onChange} ref={captchaRef} />
+                    <Button onClick={handleClick} variant="contained" size="large" endIcon={<PlayCircleFilledIcon />} sx={{m:3}}>
+                        Avanzar
+                    </Button>
                 </Box>
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12}  sm={6}>
+                <DataTable columns={columns} rows={certificados} action={false} />
             </Grid>
         </Grid>
         <Snackbar open={ open } autoHideDuration={3000} onClose={handleClose}>
@@ -169,7 +179,7 @@ export default function Start({certificados, data, textos, startProcess, handleC
                 Ingresar los datos solicitados
             </Alert>
         </Snackbar>
-        <Button onClick={handleClick} variant="contained" size="large" endIcon={<PlayCircleFilledIcon />}>Avanzar</Button>
+        
         <Dialog open={openL} onClose={() => setOpen(false)}>
             <DialogContent>
               <CircularProgress />

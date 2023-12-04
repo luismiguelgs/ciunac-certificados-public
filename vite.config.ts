@@ -7,5 +7,14 @@ export default defineConfig({
   build:{
     chunkSizeWarningLimit:1000,
     // Configuración manual de chunks
+    rollupOptions:{
+      output:{
+        manualChunks(id:string){
+          if (id.includes('firebase')) {
+            return '@fb';
+          }
+        }
+      }
+    }
   }
 })

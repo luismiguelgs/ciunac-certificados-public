@@ -1,8 +1,7 @@
 import './App.css'
 import Proceso from './pages/Proceso'
 import Start from './pages/Start'
-import { Toolbar, Box, AppBar, Typography, IconButton } from '@mui/material'
-import MenuIcon from '@mui/icons-material/Menu';
+import { Toolbar, Box, AppBar, Typography } from '@mui/material'
 import { useState } from 'react'
 import {IbasicInfo} from './interfaces/IbasicInfo'
 import Preloader from './components/Preloader';
@@ -51,9 +50,6 @@ function App()
         <Preloader setCertificados={setCertificados} setTextos={setTextos} setFacultades={setFacultades} setCursos={setCursos} setOpen={setOpen}/>
         <AppBar position="static" style={{width:'100%'}}>
           <Toolbar>
-            <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }} >
-              <MenuIcon />
-            </IconButton>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               {title}
             </Typography>
