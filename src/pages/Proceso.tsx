@@ -26,10 +26,12 @@ type Props = {
 
 export default function Proceso({basicInfo, textos, facultades, cursos}:Props)
 {
+
   //estado de snackbar informativo
   const [open, setOpen] = React.useState(false);
   //cerrar el snackbar informativo
   const handleClose = () => setOpen(false);
+ 
 
   //información básica *****************************************************************
   const [basicData, setBasicData] = React.useState<IstudentData>({
@@ -97,6 +99,7 @@ const validate2010 = () =>{
   setOpen(true)
   return false
 }
+
 // Control del Stepper *************************************************************************
 const [activeStep, setActiveStep] = useState<number>(0)
 const [skipped, setSkipped] = useState(new Set<number>())
@@ -117,8 +120,10 @@ const handleNext = () => {
     case 0:
       if (validateBasicData()) {
         if(!checked) setBasicData((prevFormData)=>({...prevFormData, facultad:''}))
+       
         setActiveStep((prevActiveStep) => prevActiveStep + 1)
         setSkipped(newSkipped)
+        
       }
     break;
     case 1:

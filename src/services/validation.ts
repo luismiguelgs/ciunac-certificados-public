@@ -2,6 +2,10 @@ import React from 'react'
 import uploadLogo from '../assets/upload.svg'
 import { IstudentData, IstudentVal } from '../interfaces/IstudentData';
 import { IfinData, IfinVal } from '../interfaces/IfinData';
+import { IbasicInfo } from '../interfaces/IbasicInfo';
+import { firestore } from '../services/firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore'
+
 
 
 export function validationBasicData(
@@ -144,4 +148,36 @@ export function validationFinData(
       }
     }
     return imagen && voucher && fecha && pago
+}
+export function validarRegistroAnterior(basicInfo:IbasicInfo, basicData:IstudentData)
+{
+  
+      //buscar registro en la base de datos
+      const dni = basicInfo.dni
+      const idioma = basicData.idioma
+      const nivel = basicData.nivel
+      const documento = basicInfo.solicitud
+      //base de datos
+      const db_solicitudes = collection(firestore, 'solicitudes');
+
+      console.log(dni, idioma, nivel, documento);
+
+      const q = query(db_solicitudes, 
+        where('dni','==',dni),
+        where('idioma','==',idioma),
+        where('nivel','==',nivel),
+        where('dni','==',documento),
+        where('estado','!=','ENTREGADO')
+      )
+      getDocs(q).then((querySnapshot) => {
+        const datos: any[] = [];
+        querySnapshot.forEach((doc)=>{
+          datos.push({ id: doc.id, ...doc.data() });
+        })
+        
+      }).catch((error)=>{
+        console.log('Error al buscar registros:', error);
+      }) 
+  
+  return false
 }

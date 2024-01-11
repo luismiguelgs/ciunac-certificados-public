@@ -3,11 +3,13 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { VisuallyHiddenInput } from '../services/Constantes';
 import {storage } from '../services/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { useState } from 'react';
 import FolderIcon from '@mui/icons-material/Folder';
 import { IstudentData } from '../interfaces/IstudentData';
 import { Itexto } from '../interfaces/Itexto';
 import { IbasicInfo } from '../interfaces/IbasicInfo';
+import React from 'react';
+import SolicitudesService from '../services/SolicitudesService';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
     basicData: IstudentData,
@@ -21,10 +23,26 @@ type Props = {
 
 export default function UnacWork({dataStr, changeDataStr , open, handleClose, basicData, textos, basicInfo}:Props)
 {
-    const [data,setData] = useState<any>([])
-    const [progress, setProgress] = useState<number>(0)
-    const [enviar, setEnviar] = useState<boolean>(true)
+    const [data,setData] = React.useState<any>([])
+    const [progress, setProgress] = React.useState<number>(0)
+    const [enviar, setEnviar] = React.useState<boolean>(true)
+    //router
+    const navigate = useNavigate()
     
+    // Validar si hay registros anteior *****************************************************************
+
+    React.useEffect(()=>{
+        const fetchData = async() =>{
+            const result = await SolicitudesService.fetchRecord(basicData.idioma,basicData.nivel,basicInfo.dni,basicInfo.solicitud)
+            
+            if(result.length > 0){
+                console.log('existe registro anterior');
+                navigate('/cargo',{state:{data:result}})
+            }
+        }
+        fetchData()
+    },[])
+
     const handleClick = () => {
         const name = data.name.split('.')
         const storageRef = ref(storage, `trabajadores/${basicInfo.dni}-${basicData.idioma}-${basicData.nivel}.${name[1]}`);

@@ -9,6 +9,10 @@ import Icertificado from './interfaces/Icertificado';
 import { Itexto } from './interfaces/Itexto';
 import { Ifacultad } from './interfaces/Ifacultad';
 import { Icurso } from './interfaces/Icurso';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import PrivateRoutes from './pages/PrivateRoutes'
+import Cargo from './pages/Cargo'
+//import Test from './pages/Test'
 
 
 function App() 
@@ -19,7 +23,7 @@ function App()
   const [textos, setTextos] = useState<Itexto[]>([])
   const [facultades, setFacultades] = useState<Ifacultad[]>([])
   const [cursos, setCursos] = useState<Icurso[]>([])
-  const [start, setStart] = useState<boolean>(true)
+  const [auth, setAuth] = useState<boolean>(false)
   const [title, setTitle] = useState<string>('CIUNAC - Solicitudes')
   const [basicInfo, setBasicInfo] = useState<IbasicInfo>({
     solicitud:'CERTIFICADO_DE_ESTUDIO',
@@ -38,12 +42,6 @@ function App()
       [event.target.name]: event.target.checked,
     });
   };
-
-  const startProcess = () =>{
-    const _title = basicInfo.solicitud.split('_')
-    setTitle(_title[0] + ' ' + _title[1] + ' ' + _title[2])
-    setStart(!start) 
-  }
   
   return(
       <Box sx={{ flexGrow: 1 }}>
@@ -55,17 +53,30 @@ function App()
             </Typography>
           </Toolbar>
         </AppBar>
-        { start && 
-          <Start 
-            certificados={certificados}
-            data={basicInfo} 
-            textos={textos}
-            openL={open}
-            startProcess={startProcess} 
-            handleChange={handleChangeBasicInfo} 
-            handleChangeSwitch={handleChangeSwitch}/> 
-        }
-        { !start && <Proceso basicInfo={basicInfo} textos={textos} facultades={facultades} cursos={cursos}/>}
+        {/*   Router   */ }
+        <BrowserRouter>
+          <Routes>
+            <Route path='/' element={
+              <Start 
+                certificados={certificados}
+                data={basicInfo} 
+                textos={textos}
+                openL={open}
+                setAuth={setAuth}
+                setTitle={setTitle}
+                handleChange={handleChangeBasicInfo} 
+                handleChangeSwitch={handleChangeSwitch}/> 
+            } /> 
+            <Route element={<PrivateRoutes auth={auth}/>}>
+              <Route path='/proceso' element={
+                <Proceso basicInfo={basicInfo} textos={textos} facultades={facultades} cursos={cursos}/>
+              } />
+              <Route path='/cargo' element={<Cargo textos={textos} />} />
+            </Route>
+            {/*<Route path='/test' element={<Test />} />*/}
+            <Route path="*" element={<div><p>Página no disponible: 404!</p><Link to={'/'} >Inicio</Link></div>} />
+          </Routes>
+        </BrowserRouter>
     </Box>
   )
 }

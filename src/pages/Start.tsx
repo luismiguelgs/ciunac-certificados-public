@@ -10,6 +10,7 @@ import { Itexto } from "../interfaces/Itexto";
 import { Dialog, DialogContent, CircularProgress, Typography } from '@mui/material';
 import ReCAPTCHA from "react-google-recaptcha";
 import DataTable from "../components/DataTable";
+import { useNavigate } from "react-router-dom";
 
 
 const columns: IColumn[] = [
@@ -22,14 +23,16 @@ type Props = {
     certificados:Icertificado[],
     data:IbasicInfo,
     textos:Itexto[],
-    startProcess(): void,
+    setTitle: React.Dispatch<React.SetStateAction<string>>,
+    setAuth: React.Dispatch<React.SetStateAction<boolean>>,
     handleChange(e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void,
     handleChangeSwitch(event: React.ChangeEvent<HTMLInputElement>):void,
     openL:boolean
 }
 
-export default function Start({certificados, data, textos, startProcess, handleChange, handleChangeSwitch, openL}:Props)
+export default function Start({certificados, data, textos, handleChange, handleChangeSwitch, openL, setTitle, setAuth}:Props)
 {
+    const navigate = useNavigate()
     const captchaRef = React.useRef<ReCAPTCHA>(null)
     const dniRef = useMask({ mask: '________', replacement: { _: /\d/ } });
     let emailRegex = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/ 
@@ -45,6 +48,14 @@ export default function Start({certificados, data, textos, startProcess, handleC
 
     //cerrar el snackbar informativo
     const handleClose = () => setOpen(false);
+
+    //iniciar proceso
+    const startProcess = () =>{
+        const _title = data.solicitud.split('_')
+        setTitle(_title[0] + ' ' + _title[1] + ' ' + _title[2])
+        setAuth(true) 
+        navigate("/proceso")
+    }
 
     const handleClick = () => {
         if(validation()){

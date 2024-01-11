@@ -7,10 +7,12 @@ import { IfinData } from "../interfaces/IfinData"
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import DataDisplay from "../components/DataDisplay"
-import { firestore } from '../services/firebase';
-import { collection, serverTimestamp, addDoc } from 'firebase/firestore'
 import { Irow } from "../interfaces/Irow"
 import { Itexto } from "../interfaces/Itexto"
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import PDFService from "../services/PdfService"
+import SolicitudesService from "../services/SolicitudesService"
+import pdf from '../assets/pdf.png'
 
 
 type Props = {
@@ -30,10 +32,7 @@ interface Condiciones{
 
 export default function Finish({ basicInfo, studentData, finData, setActiveStep, constancia, data2010, textos }:Props)
 {
-  //base de datos
-  const db_solicitudes = collection(firestore, 'solicitudes');
-  const db_2010 = collection(firestore, 'solicitudes_2010')
-
+  
   const [success,setSuccess] = React.useState<boolean>(false)
   const [loading, setLoading] = React.useState<boolean>(false)
 
@@ -55,68 +54,42 @@ export default function Finish({ basicInfo, studentData, finData, setActiveStep,
 
   const handleFinish = () =>{
     setLoading(true)
-    newItem()
+    //guardar nuevo registro
+    SolicitudesService.newItem(basicInfo,studentData,finData,constancia,data2010)
     setLoading(false)
     setSuccess(true)
     setOpen(false)
   }
-  //guardar nuevo registro
-  const newItem  = async() =>{
-    const data = {
-      solicitud:basicInfo.solicitud,
-      estado:'NUEVO',
-      pago:+finData.pago,
-      dni:basicInfo.dni,
-      email:basicInfo.email,
-      trabajador:basicInfo.trabajador,
-      antiguo:basicInfo.antiguo,
-      nombres:studentData.nombres,
-      apellidos:studentData.apellidos,
-      celular:studentData.celular,
-      idioma:studentData.idioma,
-      nivel:studentData.nivel,
-      facultad:studentData.facultad,
-      codigo:studentData.codigo,
-      certificado_trabajo:constancia,
-      voucher:finData.imagen,
-      numero_voucher:finData.voucher,
-      fecha_pago: finData.fecha,
-      creado:serverTimestamp(),
-      modificado:serverTimestamp()
-    }
-    let docRef = null
-    try{
-      docRef = await addDoc(db_solicitudes, data)
-    }catch(err){
-      console.log(err);
-    }
-    let newID = null
-    if(docRef) newID = docRef.id;
-    if(data2010){
-      for (let index = 0; index < data2010.length; index++) {
-        const data = {
-          documento:newID,
-          ciclo:data2010[index].ciclo,
-          anno: data2010[index].anno,
-          mes: data2010[index].mes,
-          profesor: data2010[index].profesor
-        }
-        try{
-          let docRef1 = await addDoc(db_2010, data)
-          console.log(docRef1);
-          
-        }catch(err){
-          console.log(err);
-        }            
-      } 
-    }
-    
+  const exportPDF = () => {
+      PDFService.exportar(textos,{
+        solicitud:basicInfo.solicitud,
+        creado:new Date().toLocaleString(),
+        apellidos: studentData.apellidos,
+        nombres: studentData.nombres,
+        dni: basicInfo.dni,
+        idioma: studentData.idioma,
+        nivel: studentData.nivel,
+        pago:finData.pago,
+        voucher:finData.voucher
+      })
   }
-    return(
+  return(
         <React.Fragment>
             <Box sx={{m:3}}>
+              <Alert sx={{mt:2, mb:2}} severity="warning">
+                {textos.find(objeto=> objeto.titulo === 'texto_1_final')?.texto}
+              </Alert>
               {
-                success && <Alert sx={{mt:2, mb:2}}  severity="success">Se ha completado el procedimiento</Alert>
+                success && (
+                <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                  <Alert sx={{mt:2, mb:2}}  severity="success">Se ha completado el procedimiento puede descargar su cargo!</Alert>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <img src={pdf} alt='pdf' width='50px' style={{margin:'5px'}} onClick={exportPDF}></img>
+                    <Button color="success" variant="contained" onClick={exportPDF} autoFocus disabled={loading} endIcon={<CloudDownloadIcon />} >
+                      Descargar Cargo
+                    </Button>
+                  </div>
+                </Box> )
               }
               {
                 !success && <DataDisplay basicInfo={basicInfo} studentData={studentData} finData={finData}/>
@@ -128,9 +101,7 @@ export default function Finish({ basicInfo, studentData, finData, setActiveStep,
                 />
               </Box>
 
-              <Alert sx={{mt:2}} severity="warning">
-                {textos.find(objeto=> objeto.titulo === 'texto_1_final')?.texto}
-              </Alert>
+              
               <Alert sx={{mt:2}} severity="info">
                 {textos.find(objeto=> objeto.titulo === 'texto_1_disclamer')?.texto}
               </Alert>
@@ -148,17 +119,11 @@ export default function Finish({ basicInfo, studentData, finData, setActiveStep,
                 {
                   !success && (
                   <Box sx={{flex: '1 1 auto'}}>
-                    <Button 
-                      color='primary' 
-                      onClick={handleBack} 
-                      sx={{mr:1}} 
-                      variant="outlined"
-                      startIcon={<ArrowBackIcon />}>
+                    <Button color='primary' onClick={handleBack} sx={{mr:1}} variant="outlined" startIcon={<ArrowBackIcon />}>
                       REGRESAR
                     </Button>
                     <Button 
-                      disabled={!(condiciones.data && condiciones.aceptar)}
-                      color='primary' 
+                      disabled={!(condiciones.data && condiciones.aceptar)} color='primary' 
                       onClick={()=>setOpen(true)} 
                       sx={{mr:1}} 
                       variant="outlined"
@@ -206,5 +171,5 @@ export default function Finish({ basicInfo, studentData, finData, setActiveStep,
                 </DialogActions>
               </Dialog>
         </React.Fragment>
-    )
+  )
 }
