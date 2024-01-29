@@ -2,13 +2,61 @@ import React from 'react'
 import uploadLogo from '../assets/upload.svg'
 import { IstudentData, IstudentVal } from '../interfaces/IstudentData';
 import { IfinData, IfinVal } from '../interfaces/IfinData';
-import { IbasicInfo } from '../interfaces/IbasicInfo';
+import { IbasicInfo, IbasicVal } from '../interfaces/IbasicInfo';
 import { firestore } from '../services/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore'
-
-
+import ReCAPTCHA from 'react-google-recaptcha';
 
 export function validationBasicData(
+  data:IbasicInfo, 
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  setVal: React.Dispatch<React.SetStateAction<IbasicVal>>,
+  emailRegex:RegExp,
+  captchaRef: React.RefObject<ReCAPTCHA>
+  )
+{
+    let dni:boolean
+    let email:boolean
+    let captcha:boolean
+
+    if(data.email === '')
+    {
+      email = false
+      setOpen(!email)
+      setVal((prevBasicVal)=>({...prevBasicVal, email:true}))
+    }else{
+      if(!emailRegex.test(data.email)){
+        email = false
+        setOpen(!email)
+        setVal((prevBasicVal)=>({...prevBasicVal, email:true}))
+      }else{
+        email = true
+        setOpen(!email)
+        setVal((prevBasicVal)=>({...prevBasicVal, email:false}))
+      }
+    }
+    if(data.dni === '' || data.dni.length <8){
+      dni = false
+      setOpen(!dni)
+      setVal((prevBasicVal)=>({...prevBasicVal, dni:true}))
+    }else{
+      dni = true
+      setOpen(!dni)
+      setVal((prevBasicVal)=>({...prevBasicVal, dni:false}))
+    }
+    const captchaValue = captchaRef.current?.getValue()
+
+    if(!captchaValue){
+      captcha = false
+      setOpen(!captcha)
+    }else{
+      captcha = true
+      setOpen(!captcha)
+    }
+    return email && dni && captcha
+}
+
+export function validationStudentData(
     data:IstudentData,
     setOpen:React.Dispatch<React.SetStateAction<boolean>>,
     checked:boolean,

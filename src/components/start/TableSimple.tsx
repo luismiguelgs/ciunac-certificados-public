@@ -1,42 +1,31 @@
 //import React from 'react';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import IconButton from '@mui/material/IconButton';
+import { Paper, Table, TableBody, TableCell, TableContainer,TableHead,TableRow, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+
+export interface IColumn {
+  id: string;
+  label: string;
+  minWidth?: number;
+  align?: 'left' | 'right';
+  format?: (value: number) => string;
+}
 
 type Props = {
     rows:any[],
     columns:IColumn[],
-    handleDelete?:(id:string | undefined)=>void,
-    handleEdit?:(id:string | undefined)=>void,
-    action:boolean
+    handleDelete?:(id: number | undefined)=>void,
+    handleEdit?:(id:number | undefined)=>void,
+    action?:boolean,
+    edit?: boolean,
+    del?: boolean
 }
 
-export default function DataTable({rows, columns, handleDelete, handleEdit, action}:Props) {
-  /*
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  /*
-  const handleChangePage = (event: unknown, newPage: number) => {
-    console.log(event);
-    
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-  */
+export default function TableSimple({rows, columns, handleDelete, handleEdit, action=false, edit=false, del=false}:Props) {
+  
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
+      <TableContainer sx={{ maxHeight: 440 }} component={Paper}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -71,15 +60,18 @@ export default function DataTable({rows, columns, handleDelete, handleEdit, acti
                     {
                       action && (
                         <TableCell>
-                          { /*<IconButton aria-label="status" color='primary' onClick={()=>handleChangeS?.(row)}>
-                              <AutorenewIcon />
-                            </IconButton> */}
-                          <IconButton aria-label="edit" color='secondary' onClick={()=> handleEdit?.(row.id)}>
+                          {
+                            edit &&
+                            <IconButton aria-label="edit" color='secondary' onClick={()=> handleEdit?.(row.id)}>
                               <EditIcon />
-                          </IconButton>
-                          <IconButton aria-label="delete" color='error' onClick={()=> handleDelete?.(row.id)}>
+                           </IconButton>
+                          }
+                          {
+                            del &&
+                            <IconButton aria-label="delete" color='error' onClick={()=> handleDelete?.(row.id)}>
                               <DeleteIcon />
-                          </IconButton>
+                            </IconButton>
+                          }
                         </TableCell>
                       )
                     }

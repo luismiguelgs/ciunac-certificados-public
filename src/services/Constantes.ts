@@ -5,12 +5,6 @@ export const NIVEL = [
     {value:'INTERMEDIO',label:'INTERMEDIO'},
     {value:'AVANZADO',label:'AVANZADO'},
 ]
-export const STEPS = [
-    'Información Básica',
-    'Trabajador UNAC',
-    'Matricula anterior al 2010',
-    'Información de pago',
-]
 export const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
     clipPath: 'inset(50%)',
@@ -37,17 +31,20 @@ export const MES = [
     {value:'NOVIEMBRE',label:'Noviembre'},
     {value:'DICIEMBRE',label:'Diciembre'},
 ]
-export enum CICLOS {
-    INGLES_BASICO = 9,
-    INGLES_INTERMEDIO = 9,
-    INGLES_AVANZADO = 9,
-    PORTUGUEZ_BASICO = 5,
-    PORTUGUEZ_INTERMEDIO = 4,
-    PORTUGUEZ_AVANZADO = 3,
-    ITALIANO_BASICO = 5,
-    ITALIANO_INTERMEDIO = 4,
-    ITALIANO_AVANZADO = 3,
-    FRANCES_BASICO = 5,
-    FRANCES_INTERMEDIO = 4,
-    FRANCES_AVANZADO = 3
-}
+
+type CicloTupla = [string, string, number];
+
+export const CICLOS: CicloTupla[] = [
+    ['INGLES', NIVEL[0].value, 9],
+    ['INGLES', NIVEL[1].value, 9],
+    ['INGLES', NIVEL[2].value, 9],
+    ['PORTUGUEZ', NIVEL[0].value, 5],
+    ['PORTUGUEZ', NIVEL[1].value, 4],
+    ['PORTUGUEZ', NIVEL[2].value, 3],
+    ['ITALIANO', NIVEL[0].value, 5],
+    ['ITALIANO', NIVEL[1].value, 4],
+    ['ITALIANO', NIVEL[2].value, 3],
+    ['FRANCES', NIVEL[0].value, 5],
+    ['FRANCES', NIVEL[1].value, 4],
+    ['FRANCES', NIVEL[2].value, 3],
+]

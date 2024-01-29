@@ -12,13 +12,13 @@ import { Icurso } from './interfaces/Icurso';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import PrivateRoutes from './pages/PrivateRoutes'
 import Cargo from './pages/Cargo'
+import Reporte from './pages/Reporte'
 //import Test from './pages/Test'
 
 
 function App() 
 {
   //variable de datos iniciales
-  const [open, setOpen] = useState(true);
   const [certificados, setCertificados] = useState<Icertificado[]>([]);
   const [textos, setTextos] = useState<Itexto[]>([])
   const [facultades, setFacultades] = useState<Ifacultad[]>([])
@@ -45,8 +45,8 @@ function App()
   
   return(
       <Box sx={{ flexGrow: 1 }}>
-        <Preloader setCertificados={setCertificados} setTextos={setTextos} setFacultades={setFacultades} setCursos={setCursos} setOpen={setOpen}/>
-        <AppBar position="static" style={{width:'100%'}}>
+        <Preloader setCertificados={setCertificados} setTextos={setTextos} setFacultades={setFacultades} setCursos={setCursos} />
+        <AppBar position="static" style={{width:'100%',marginBottom:'12px'}}>
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               {title}
@@ -61,7 +61,6 @@ function App()
                 certificados={certificados}
                 data={basicInfo} 
                 textos={textos}
-                openL={open}
                 setAuth={setAuth}
                 setTitle={setTitle}
                 handleChange={handleChangeBasicInfo} 
@@ -73,7 +72,8 @@ function App()
               } />
               <Route path='/cargo' element={<Cargo textos={textos} />} />
             </Route>
-            {/*<Route path='/test' element={<Test />} />*/}
+            <Route path='/reporte' element={<Reporte />} />
+            {/*<Route path='/test' element={<Test basicInfo={basicInfo} textos={textos} facultades={facultades} cursos={cursos} />} />*/}
             <Route path="*" element={<div><p>Página no disponible: 404!</p><Link to={'/'} >Inicio</Link></div>} />
           </Routes>
         </BrowserRouter>

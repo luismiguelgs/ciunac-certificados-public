@@ -10,11 +10,12 @@ type Props = {
   title:string,
   content:string,
   open:boolean,
-  setOpen:React.Dispatch<React.SetStateAction<boolean>>
+  setOpen:React.Dispatch<React.SetStateAction<boolean>>,
+  actions?:boolean
   actionFunc?:()=>void
 }
 
-export default function DialogAlert({title,content, open, setOpen}:Props) 
+export default function DialogAlert({title,content, open, setOpen, actions=false,actionFunc}:Props) 
 {
   const handleClose = () => {
     setOpen(false);
@@ -37,7 +38,18 @@ export default function DialogAlert({title,content, open, setOpen}:Props)
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} autoFocus>Aceptar</Button>
+            {
+              !actions ? 
+              (<Button onClick={handleClose} autoFocus>Aceptar</Button>):
+              (<>
+                <Button color="warning" variant="contained" onClick={handleClose}>
+                    Cancelar
+                  </Button>
+                  <Button color="success" variant="contained" onClick={actionFunc}>
+                    Aceptar
+                </Button>
+              </>) 
+            }
           </DialogActions>
         </Dialog>
     </React.Fragment>

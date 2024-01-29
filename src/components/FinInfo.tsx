@@ -1,55 +1,48 @@
-import { Box, Alert, Button, TextField,Grid, Snackbar, LinearProgress, Card, CardMedia, CardContent } from '@mui/material'
+import { Box, Alert, Button, TextField,Grid, LinearProgress, Card, CardMedia, CardContent, InputAdornment } from '@mui/material'
 import { VisuallyHiddenInput } from '../services/Constantes';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import {useState} from 'react';
+import React from 'react';
 import { useMask } from '@react-input/mask';
 import { IfinData, IfinVal } from '../interfaces/IfinData';
-import {storage } from '../services/firebase';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import FolderIcon from '@mui/icons-material/Folder';
 import { IstudentData } from '../interfaces/IstudentData';
-import InputAdornment from '@mui/material/InputAdornment';
-import { Itexto } from '../interfaces/Itexto';
 import { IbasicInfo } from '../interfaces/IbasicInfo';
+import MySnackBar from './MUI/MySnackBar';
+import StorageService from '../services/StorageService';
+import { CloudUploadIcon, FolderIcon } from '../services/icons';
+import { Itexto } from '../interfaces/Types';
 
 type Props = {
     basicData: IstudentData,
     finData: IfinData,
-    handleChange(e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void,
-    changeImgFin(img:string):void,
+    setFinData: React.Dispatch<React.SetStateAction<IfinData>>,
     validation: IfinVal,
     open:boolean,
-    handleClose():void,
     textos:Itexto[],
-    basicInfo:IbasicInfo
+    basicInfo:IbasicInfo,
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
-export default function FinInfo({finData,basicData,handleChange, changeImgFin, validation, open, handleClose, textos, basicInfo}:Props)
+export default function FinInfo({finData,basicData, setFinData, validation, open, setOpen, textos, basicInfo}:Props)
 {
-    const [data,setData] = useState<any>([])
-    const [progress, setProgress] = useState<number>(0)
-    const [enviar, setEnviar] = useState<boolean>(true)
+    const [data,setData] = React.useState<any>([])
+    const [progress, setProgress] = React.useState<number>(0)
+    const [enviar, setEnviar] = React.useState<boolean>(true)
 
     const voucherRef = useMask({ mask: '_______________', replacement: { _: /\d/ } });
     const pagoRef = useMask({ mask: '_____', replacement: { _: /^[0-9.]*$/ } });
 
+    const handleChange = (event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const {name, value} = event.target
+        setFinData((prevFormData)=>({...prevFormData, [name]:value}))
+      }
+      const handleChangeImg = (img:string) =>{
+        setFinData((prevFormData)=>({...prevFormData, imagen:img}))
+      }
+
     const handleClick = () => {
-        const name = data.name.split('.')
-        const storageRef = ref(storage, `vouchers/${basicInfo.dni}-${basicData.idioma}-${basicData.nivel}.${name[1]}`);
-        const uploadTask = uploadBytesResumable(storageRef, data);
-        uploadTask.on('state_changed', (snapshot)=>{
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            //console.log('Upload is ' + progress + '% done');
-            setEnviar(true)
-            setProgress(progress)
-          },(error)=>{
-            console.log(error.message);
-          },()=>{
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl)=>{
-                changeImgFin(downloadUrl)
-                console.log('Archivo disponible en... ', downloadUrl);
-            });
-          });
+        let name = data.name.split('.')
+        name = `${basicInfo.dni}-${basicData.idioma}-${basicData.nivel}.${name[1]}`
+
+        StorageService.uploadVoucher(name,data,setEnviar,setProgress,handleChangeImg)
     }
     const handleChangeFile = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { files } = e.target as HTMLInputElement
@@ -113,9 +106,7 @@ export default function FinInfo({finData,basicData,handleChange, changeImgFin, v
                         error={validation.pago}
                         value={finData.pago}
                         onChange={e=>handleChange(e)}
-                        InputProps={{
-                            startAdornment: <InputAdornment position="start">S/</InputAdornment>,
-                        }}
+                        InputProps={{startAdornment: <InputAdornment position="start">S/</InputAdornment>,}}
                         name="pago"
                         label="Monto pagado"
                         helperText={ validation.pago && "Ingrese el monto pagado / monto inválido"}
@@ -128,9 +119,7 @@ export default function FinInfo({finData,basicData,handleChange, changeImgFin, v
                         value={finData.fecha}
                         onChange={e=>handleChange(e)}
                         name="fecha"
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
+                        InputLabelProps={{shrink: true,}}
                         label="Fecha de pago"
                         helperText={ validation.fecha && "Ingrese la fecha de pago válida"}
                     />
@@ -147,11 +136,12 @@ export default function FinInfo({finData,basicData,handleChange, changeImgFin, v
                     </Card>
                 </Grid>
             </Grid>
-            <Snackbar open={ open } autoHideDuration={3000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-                    Ingresar los datos solicitados
-                </Alert>
-            </Snackbar>
+            <MySnackBar 
+                open={open}
+                setOpen={setOpen}
+                content='Ingresar los datos solicitados'
+                severity='error'
+            />
         </Box>
     )
 }

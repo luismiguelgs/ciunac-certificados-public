@@ -15,7 +15,7 @@ export default function Cargo({textos}:Props)
     const data = location.state?.data || []
 
     const descargarPDF = (item:any) =>{
-      PDFService.exportar(textos,{
+      const blobPDF =  PDFService.exportar(textos,{
         solicitud:item.solicitud,
         creado:item.creado,
         apellidos:item.apellidos,
@@ -26,6 +26,21 @@ export default function Cargo({textos}:Props)
         pago: item.pago,
         voucher: item.numero_voucher
       })
+      const blobUrl = URL.createObjectURL(blobPDF);
+
+      // Crear un enlace (hipervínculo) invisible
+      const a = document.createElement('a')
+      a.style.display = 'none'
+      a.href = blobUrl
+      a.download = `${item.dni}-${item.idioma}-${item.nivel}.pdf`
+
+      // Agregar el enlace al documento y hacer clic para iniciar la descarga
+      document.body.appendChild(a);
+      a.click();
+
+      // Limpiar el enlace después de la descarga
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
     }
     
     return (
@@ -35,7 +50,9 @@ export default function Cargo({textos}:Props)
               <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                   {data.map((item:any)=>(
                     <div key={item.id}  style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <img src={pdf} alt={item.id}  width='50px' style={{margin:'5px'}} onClick={()=>descargarPDF(item)}></img>
+                        <a href='https://www.google.com' target="_blank" rel="noopener noreferrer">
+                          <img src={pdf} alt={item.id}  width='50px' style={{margin:'5px'}} ></img>
+                        </a>
                         <Button size="large" onClick={()=>descargarPDF(item)}>{`${item.dni}-${item.idioma}-${item.nivel}.PDF`}</Button>
                     </div>
                   ))}

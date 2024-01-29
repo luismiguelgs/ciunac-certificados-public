@@ -1,53 +1,45 @@
-import { 
-    Box, MenuItem, TextField, Button, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Alert,
-    IconButton, Snackbar
-} from "@mui/material"
+import { Box, TextField, Button, Alert } from "@mui/material"
 import React from "react"
-import { MES }  from '../services/Constantes'
+import { MES, CICLOS }  from '../services/Constantes'
 import { useMask } from '@react-input/mask';
-import {Irow, IformData} from "../interfaces/Irow";
-import DeleteIcon from "@mui/icons-material/Delete"
 import { IstudentData } from "../interfaces/IstudentData";
-import { CICLOS } from "../services/Constantes";
-import { Itexto } from "../interfaces/Itexto";
+import MySnackBar from "./MUI/MySnackBar";
+import TableSimple, { IColumn } from "./start/TableSimple";
+import MySelect from "./MUI/MySelect";
+import { IformData, Irow, Itexto } from "../interfaces/Types";
+
+const columns: IColumn[] = [
+    { id: 'ciclo', label: 'CICLO', minWidth: 150 },
+    { id: 'mes', label: 'MES', minWidth: 120 },
+    { id: 'anno', label: 'AÑO', minWidth: 120 },
+    { id: 'profesor', label: 'PROFESOR', minWidth: 120 },
+];
 
 type Props = {
     data: IstudentData,
     rows: Irow[],
     setRows: React.Dispatch<React.SetStateAction<Irow[]>>
     open:boolean,
-    handleClose():void,
+    setOpen : React.Dispatch<React.SetStateAction<boolean>>
     textos:Itexto[]
 }
 
-export default function Before2010({ data, rows, setRows, open, handleClose,textos }:Props)
+export default function Before2010({ data, rows, setRows, open, setOpen,textos }:Props)
 {   
     //variables de prueba
-    let idioma = data.idioma
-    let nivel = data.nivel
-
-    let niveles: string[] = []
-    let annos: string[] = []
-
-    const agregarRows = (row:Irow):void =>{
-        setRows([...rows,row])
-    }
-    const eliminarRows = (id:number):void =>{
-        setRows(rows.filter(r=>r.id !== id))
-    }
+    let niveles: any[] = []
+    let annos: any[] = []
 
     const poblarAnnos = () =>{
         for (let index = 2000; index < 2010; index++) {
-           annos.push(index.toString())
+           annos.push({value:index, label:index.toString()})
         }
     }
-
     const poblarArreglo = (ciclos:number):void =>{
         for (let index = 1; index <= ciclos; index++) {
-            niveles.push(nivel + ' ' + index)                
+            niveles.push({value:data.nivel + ' ' + index,label:data.nivel + ' ' + index})                
         }
     }
-
     const agregarCiclo = ():void =>{
         setIndex(new Date().getTime())
         let row:Irow = {
@@ -57,67 +49,22 @@ export default function Before2010({ data, rows, setRows, open, handleClose,text
             mes:formData.mes,
             profesor:formData.profesor
         }
-        agregarRows(row)
+        setRows([...rows,row])
         setFormData((prevFormData)=>({...prevFormData, profesor:''}))
     }
-    const eliminarCiclo = (id:number):void =>{
-        eliminarRows(id)
+    const eliminarCiclo = (id:number | undefined):void =>{
+        setRows(rows.filter(r=>r.id !== id))
     }
-    const establecerNivelesIngles = (nivel:string):void =>{
-        if(nivel === 'BASICO'){
-            poblarArreglo(CICLOS.INGLES_BASICO)
-        }else if(nivel == 'INTERMEDIO'){
-            poblarArreglo(CICLOS.INGLES_INTERMEDIO)
-        }else{
-            poblarArreglo(CICLOS.INGLES_AVANZADO)
-        }
-    }
-    const establecerNivelesPortuguez = (nivel:string):void =>{
-        if(nivel === 'BASICO'){
-            poblarArreglo(CICLOS.PORTUGUEZ_BASICO)
-        }else if(nivel == 'INTERMEDIO'){
-            poblarArreglo(CICLOS.PORTUGUEZ_INTERMEDIO)
-        }else{
-            poblarArreglo(CICLOS.PORTUGUEZ_AVANZADO)
-        }
-    }
-    const establecerNivelesItaliano = (nivel:string):void =>{
-        if(nivel === 'BASICO'){
-            poblarArreglo(CICLOS.ITALIANO_BASICO)
-        }else if(nivel == 'INTERMEDIO'){
-            poblarArreglo(CICLOS.ITALIANO_INTERMEDIO)
-        }else{
-            poblarArreglo(CICLOS.ITALIANO_AVANZADO)
-        }
-    }
-    const establecerNivelesFrances = (nivel:string):void =>{
-        if(nivel === 'BASICO'){
-            poblarArreglo(CICLOS.FRANCES_BASICO)
-        }else if(nivel == 'INTERMEDIO'){
-            poblarArreglo(CICLOS.FRANCES_INTERMEDIO)
-        }else{
-            poblarArreglo(CICLOS.FRANCES_AVANZADO)
-        }
-    }
-
-    switch (idioma) {
-        case 'PORTUGUEZ':
-            establecerNivelesPortuguez(nivel)
-            break;
-        case 'ITALIANO':
-            establecerNivelesItaliano(nivel)
-            break;
-        case 'FRANCES':
-            establecerNivelesFrances(nivel)
-            break;    
-        default:
-            establecerNivelesIngles(nivel)
-            break;
-    }
+    const obtenerNumeroCiclos = (idioma: string, nivel: string): number => {
+        const tupla = CICLOS.find(([i, n]) => i === idioma && n === nivel);
+        return tupla ? tupla[2] : 0; // Devolver 0 si no se encuentra la combinación
+    };
+    
+    poblarArreglo(obtenerNumeroCiclos(data.idioma, data.nivel))
     poblarAnnos()
 
     const [formData, setFormData] = React.useState<IformData>({
-        ciclo:niveles[0],
+        ciclo:niveles[0].value,
         mes:'ENERO',
         anno:'2009',
         profesor:''
@@ -133,59 +80,38 @@ export default function Before2010({ data, rows, setRows, open, handleClose,text
     return(
         <Box sx={{m:1}}>
             <Alert sx={{m:1}} severity="warning">
-                {textos.find(objeto=> objeto.titulo === 'texto_1_2010')?.texto}
+                {textos.find(objeto=> objeto.titulo === 'texto_1_2010')?.texto}<b>{` IDIOMA: ${data.idioma}`}</b> 
             </Alert>
-            <TextField
-                select
-                sx={{m:1}}
-                name='ciclo'
+            <MySelect 
+                name="ciclo"
                 label="Ciclo"
-                value={formData.ciclo}
-                onChange={e=>handleChange(e)}
-                helperText="Seleccionar ciclo"
-            >
-                {
-                    niveles.map((option) => (
-                        <MenuItem key={option} value={option}>
-                            {option}
-                        </MenuItem>
-                    ))
-                }
-            </TextField>
-            <TextField
-                select
                 sx={{m:1}}
+                value={formData.ciclo}
+                handleChange={e=>handleChange(e)}
+                helperText="Seleccionar ciclo"
+                data={niveles}
+                fullWidth={false}
+            />
+            <MySelect 
                 name="mes"
                 label="Mes"
-                value={formData.mes}
-                onChange={e=>handleChange(e)}
-                helperText="Seleccionar mes"
-            >
-                {
-                    MES.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                        </MenuItem>
-                    ))
-                }
-            </TextField>
-            <TextField
-                select
                 sx={{m:1}}
+                value={formData.mes}
+                handleChange={e=>handleChange(e)}
+                helperText="Seleccionar mes"
+                data={MES}
+                fullWidth={false}
+            />
+            <MySelect 
                 name="anno"
+                sx={{m:1}}
+                handleChange={e=>handleChange(e)}
+                helperText="Seleccionar año"
                 label="Año"
                 value={formData.anno}
-                onChange={e=>handleChange(e)}
-                helperText="Seleccionar año"
-            >
-                {
-                    annos.map((option) => (
-                        <MenuItem key={option} value={option}>
-                            {option}
-                        </MenuItem>
-                    ))
-                }
-            </TextField>
+                data={annos}
+                fullWidth={false}
+            />
             <TextField
                 inputRef={profesorRef}
                 sx={{m:1}}
@@ -197,44 +123,21 @@ export default function Before2010({ data, rows, setRows, open, handleClose,text
             <Button sx={{m:1}} variant="contained" size="large" onClick={()=>agregarCiclo()} disabled={rows.length>8}>
                 Agregar
             </Button>
-            <TableContainer component={Paper}>
-                <Table sx={{minWidth:450}} size="small" aria-label="a dense table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>CICLO</TableCell>
-                            <TableCell>MES</TableCell>
-                            <TableCell>AÑO</TableCell>
-                            <TableCell>PROFESOR</TableCell>
-                            <TableCell></TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {
-                            rows.map((row)=>(
-                                <TableRow key={row.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                    <TableCell component="th" scope="row">{row.ciclo}</TableCell>
-                                    <TableCell align="right">{row.mes}</TableCell>
-                                    <TableCell align="right">{row.anno}</TableCell>
-                                    <TableCell align="right">{row.profesor}</TableCell>
-                                    <TableCell>
-                                        <IconButton aria-label="delete" color="primary" onClick={()=>eliminarCiclo(row.id)}>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        }
-                    </TableBody>
-                </Table>
-            </TableContainer>
+            <TableSimple 
+                columns={columns} 
+                action={true}
+                del={true}
+                rows={rows}
+                handleDelete={eliminarCiclo}
+            />
             <Alert sx={{m:1}} severity="info">
                 En caso usted no tenga una matrícula antes del año 2010 puede omitir este paso.
             </Alert>
-            <Snackbar open={ open } autoHideDuration={3000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-                    Ingresar los datos solicitados de ciclo, mes, año 
-                </Alert>
-            </Snackbar>
+            <MySnackBar 
+                open={open}
+                setOpen={setOpen}
+                severity="error"
+                content="Ingresar los datos solicitados de ciclo, mes, año" />
         </Box>
     )
 }

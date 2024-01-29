@@ -1,27 +1,26 @@
-import { Box, Alert, Button, Snackbar, LinearProgress, Card, CardMedia, CardContent, Grid } from '@mui/material'
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { Box, Alert, Button, LinearProgress, Card, CardMedia, CardContent, Grid } from '@mui/material'
 import { VisuallyHiddenInput } from '../services/Constantes';
-import {storage } from '../services/firebase';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import FolderIcon from '@mui/icons-material/Folder';
 import { IstudentData } from '../interfaces/IstudentData';
-import { Itexto } from '../interfaces/Itexto';
 import { IbasicInfo } from '../interfaces/IbasicInfo';
 import React from 'react';
 import SolicitudesService from '../services/SolicitudesService';
 import { useNavigate } from 'react-router-dom';
+import MySnackBar from './MUI/MySnackBar';
+import StorageService from '../services/StorageService';
+import { CloudUploadIcon, FolderIcon } from '../services/icons';
+import { Itexto } from '../interfaces/Types';
 
 type Props = {
     basicData: IstudentData,
     dataStr: string,
-    changeDataStr(data:string):void,
+    setConstancia: React.Dispatch<React.SetStateAction<string>>
     open: boolean,
-    handleClose():void,
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>,
     textos:Itexto[],
     basicInfo:IbasicInfo
 }
 
-export default function UnacWork({dataStr, changeDataStr , open, handleClose, basicData, textos, basicInfo}:Props)
+export default function UnacWork({dataStr, setConstancia, open, setOpen, basicData, textos, basicInfo}:Props)
 {
     const [data,setData] = React.useState<any>([])
     const [progress, setProgress] = React.useState<number>(0)
@@ -30,7 +29,6 @@ export default function UnacWork({dataStr, changeDataStr , open, handleClose, ba
     const navigate = useNavigate()
     
     // Validar si hay registros anteior *****************************************************************
-
     React.useEffect(()=>{
         const fetchData = async() =>{
             const result = await SolicitudesService.fetchRecord(basicData.idioma,basicData.nivel,basicInfo.dni,basicInfo.solicitud)
@@ -44,21 +42,9 @@ export default function UnacWork({dataStr, changeDataStr , open, handleClose, ba
     },[])
 
     const handleClick = () => {
-        const name = data.name.split('.')
-        const storageRef = ref(storage, `trabajadores/${basicInfo.dni}-${basicData.idioma}-${basicData.nivel}.${name[1]}`);
-        const uploadTask = uploadBytesResumable(storageRef, data);
-        uploadTask.on('state_changed', (snapshot)=>{
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            setEnviar(true)
-            setProgress(progress)
-          },(error)=>{
-            console.log(error.message);
-          },()=>{
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl)=>{
-                changeDataStr(downloadUrl)
-                console.log('Archivo disponible en... ', downloadUrl);
-            });
-          });
+        let name = data.name.split('.')
+        name = `${basicInfo.dni}-${basicData.idioma}-${basicData.nivel}.${name[1]}`
+        StorageService.uploadTrabajador(name,data,setEnviar,setProgress,setConstancia)
     }
     const handleChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { files } = e.target as HTMLInputElement
@@ -112,11 +98,12 @@ export default function UnacWork({dataStr, changeDataStr , open, handleClose, ba
                     </Card>
                 </Grid>
             </Grid>
-            <Snackbar open={ open } autoHideDuration={3000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-                    Ingresar los datos solicitados, subir el archivo correspondiente
-                </Alert>
-            </Snackbar>
+            <MySnackBar  
+                content='Ingresar los datos solicitados, subir el archivo correspondiente'
+                open={open}
+                setOpen={setOpen}
+                severity='error'
+            />
         </Box>
     )
 }
