@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
-import { Itexto } from '../interfaces/Itexto';
 import logoCiunac from '/logo_ciunac.png'
+import { Itexto } from '../interfaces/Types';
 
 const MARGEN_IZQUIERDO = 15
 const ANCHO_PAGINA = 180

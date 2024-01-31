@@ -5,16 +5,12 @@ import { Toolbar, Box, AppBar, Typography } from '@mui/material'
 import { useState } from 'react'
 import {IbasicInfo} from './interfaces/IbasicInfo'
 import Preloader from './components/Preloader';
-import Icertificado from './interfaces/Icertificado';
-import { Itexto } from './interfaces/Itexto';
-import { Ifacultad } from './interfaces/Ifacultad';
-import { Icurso } from './interfaces/Icurso';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import PrivateRoutes from './pages/PrivateRoutes'
 import Cargo from './pages/Cargo'
 import Reporte from './pages/Reporte'
-//import Test from './pages/Test'
-
+import { Icertificado, Icurso, Ifacultad, Itexto } from './interfaces/Types'
+import Test from './pages/Test'
 
 function App() 
 {
@@ -49,7 +45,7 @@ function App()
         <AppBar position="static" style={{width:'100%',marginBottom:'12px'}}>
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              {title}
+              SOLICITUD: {title}
             </Typography>
           </Toolbar>
         </AppBar>
@@ -68,12 +64,12 @@ function App()
             } /> 
             <Route element={<PrivateRoutes auth={auth}/>}>
               <Route path='/proceso' element={
-                <Proceso basicInfo={basicInfo} textos={textos} facultades={facultades} cursos={cursos}/>
+                <Proceso basicInfo={basicInfo} textos={textos} facultades={facultades} cursos={cursos} certificados={certificados}/>
               } />
               <Route path='/cargo' element={<Cargo textos={textos} />} />
             </Route>
             <Route path='/reporte' element={<Reporte />} />
-            {/*<Route path='/test' element={<Test basicInfo={basicInfo} textos={textos} facultades={facultades} cursos={cursos} />} />*/}
+            <Route path='/test' element={<Test basicInfo={basicInfo} textos={textos} facultades={facultades} cursos={cursos} certificados={certificados}/>} />
             <Route path="*" element={<div><p>Página no disponible: 404!</p><Link to={'/'} >Inicio</Link></div>} />
           </Routes>
         </BrowserRouter>

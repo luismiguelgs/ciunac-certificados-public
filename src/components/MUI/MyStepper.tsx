@@ -1,12 +1,13 @@
 import { Box, Button, Step, StepLabel, Stepper, Typography } from '@mui/material'
 import React from 'react'
-import { IbasicInfo } from '../../interfaces/IbasicInfo'
 import { ArrowBackIcon, ArrowForwardIcon } from "../../services/icons";
 import DialogAlert from "../MUI/DialogAlert";
 
 export type MyStep = {
     caption: string,
-    component: React.ReactNode
+    component: React.ReactNode,
+    optional: boolean,
+    optParam?: boolean
 }
 
 type Props = {
@@ -17,37 +18,33 @@ type Props = {
     setActiveStep: React.Dispatch<React.SetStateAction<number>>,
     setSkipped: React.Dispatch<React.SetStateAction<Set<number>>>,
     handleNext(): void,
-    basicInfo: IbasicInfo
 }
 
-export default function MyStepper({stepFinish=null, activeStep, skipped, stepComponents,setActiveStep, setSkipped, handleNext, basicInfo}:Props) 
+export default function MyStepper({stepFinish=null, activeStep, skipped, stepComponents,setActiveStep, setSkipped, handleNext}:Props) 
 {
-    //estado del alert
-  const [openA, setOpenA] = React.useState(false);
 
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1)
-  }
-  
-  const handleSkip = () => {
-    if(isStepOptional(activeStep) && basicInfo.trabajador && activeStep==1){
-      setOpenA(true)
-      return
+    //estado del alert
+    const [openA, setOpenA] = React.useState(false);
+
+    const handleBack = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep - 1)
     }
-    if(isStepOptional(activeStep) && basicInfo.antiguo && activeStep==2){
-      setOpenA(true)
-      return
-    }
-    setActiveStep((prevActiveStep) => prevActiveStep + 1)
   
-    setSkipped((prevSkipped)=>{
-        const newSkipped = new Set(prevSkipped.values())
-        newSkipped.add(activeStep)
-        return newSkipped
-      })
+    const handleSkip = () => {
+        if(isStepOptional(activeStep) && stepComponents[activeStep]?.optParam){
+            setOpenA(true)
+            return
+        }
+        setActiveStep((prevActiveStep) => prevActiveStep + 1)
+  
+        setSkipped((prevSkipped)=>{
+            const newSkipped = new Set(prevSkipped.values())
+            newSkipped.add(activeStep)
+            return newSkipped
+        })
     }
     const isStepOptional = (step:number):boolean => {
-        return step === 1 || step === 2
+        return stepComponents[step].optional
     }
     const isStepSkipped = (step:number) => {
         return skipped.has(step)

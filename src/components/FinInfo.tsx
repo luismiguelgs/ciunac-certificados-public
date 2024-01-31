@@ -1,4 +1,4 @@
-import { Box, Alert, Button, TextField,Grid, LinearProgress, Card, CardMedia, CardContent, InputAdornment } from '@mui/material'
+import { Box, Alert, Button, TextField,Grid, LinearProgress, Card, CardMedia, CardContent } from '@mui/material'
 import { VisuallyHiddenInput } from '../services/Constantes';
 import React from 'react';
 import { useMask } from '@react-input/mask';
@@ -8,7 +8,8 @@ import { IbasicInfo } from '../interfaces/IbasicInfo';
 import MySnackBar from './MUI/MySnackBar';
 import StorageService from '../services/StorageService';
 import { CloudUploadIcon, FolderIcon } from '../services/icons';
-import { Itexto } from '../interfaces/Types';
+import { Icertificado, Itexto } from '../interfaces/Types';
+import MySelect from './MUI/MySelect';
 
 type Props = {
     basicData: IstudentData,
@@ -19,21 +20,29 @@ type Props = {
     textos:Itexto[],
     basicInfo:IbasicInfo,
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    certificados : Icertificado[]
 }
 
-export default function FinInfo({finData,basicData, setFinData, validation, open, setOpen, textos, basicInfo}:Props)
+export default function FinInfo({finData,basicData, setFinData, validation, open, setOpen, textos, basicInfo, certificados}:Props)
 {
     const [data,setData] = React.useState<any>([])
     const [progress, setProgress] = React.useState<number>(0)
     const [enviar, setEnviar] = React.useState<boolean>(true)
 
+    const precio = +certificados.filter((cer)=> cer.value === basicInfo.solicitud)[0].precio
+
+    const myData:any[] = [
+        {value:precio.toString(), label:`S/${precio.toFixed(2)} - precio normal`},
+        {value:(precio - precio*0.8).toString(), label:`S/${(precio - precio*0.8).toFixed(2)} - presentar certificado de trabajo`},
+        {value:(precio*0).toString(), label:`S/${(precio*0).toFixed(2)} - presentar certificado de trabajo(CAS)`},
+    ]
+
     const voucherRef = useMask({ mask: '_______________', replacement: { _: /\d/ } });
-    const pagoRef = useMask({ mask: '_____', replacement: { _: /^[0-9.]*$/ } });
 
     const handleChange = (event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const {name, value} = event.target
         setFinData((prevFormData)=>({...prevFormData, [name]:value}))
-      }
+    }
       const handleChangeImg = (img:string) =>{
         setFinData((prevFormData)=>({...prevFormData, imagen:img}))
       }
@@ -99,17 +108,15 @@ export default function FinInfo({finData,basicData, setFinData, validation, open
                         label="Número de Voucher"
                         helperText={ validation.voucher && "Ingrese el número de voucher"}
                     />
-                    <TextField
-                        inputRef={pagoRef}
+                    <MySelect 
                         sx={{mt:2,width:'80%'}}
-                        required
+                        handleChange={e=>handleChange(e)}
+                        name='pago'
                         error={validation.pago}
                         value={finData.pago}
-                        onChange={e=>handleChange(e)}
-                        InputProps={{startAdornment: <InputAdornment position="start">S/</InputAdornment>,}}
-                        name="pago"
-                        label="Monto pagado"
-                        helperText={ validation.pago && "Ingrese el monto pagado / monto inválido"}
+                        label='Monto pagado'
+                        helperText={validation.pago && "Ingrese el monto pagado / monto inválido"}
+                        data={myData}
                     />
                     <TextField
                         type='date'

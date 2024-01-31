@@ -1,9 +1,9 @@
 import { Alert, Box, Button } from '@mui/material';
 import React from 'react'
 import { useLocation } from 'react-router-dom'
-import { Itexto } from '../interfaces/Itexto';
 import pdf from '../assets/pdf.png'
 import PDFService from '../services/PdfService';
+import { Itexto } from '../interfaces/Types';
 
 type Props = {
   textos:Itexto[]

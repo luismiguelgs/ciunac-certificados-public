@@ -10,17 +10,18 @@ import { IstudentData, IstudentVal } from '../interfaces/IstudentData'
 import uploadLogo from '../assets/upload.svg'
 import {IbasicInfo } from '../interfaces/IbasicInfo'
 import { validationFinData, validationStudentData } from '../services/validation'
-import { Icurso, Ifacultad, Itexto, Irow } from '../interfaces/Types'
+import { Icurso, Ifacultad, Itexto, Irow, Icertificado } from '../interfaces/Types'
 import MyStepper, { MyStep } from '../components/MUI/MyStepper'
 
 type Props = {
   basicInfo: IbasicInfo
   textos:Itexto[],
   facultades:Ifacultad[],
-  cursos:Icurso[]
+  cursos:Icurso[],
+  certificados: Icertificado[]
 }
 
-export default function Proceso({basicInfo, textos, facultades, cursos}:Props)
+export default function Proceso({basicInfo, textos, facultades, cursos, certificados}:Props)
 {
   //estado de snackbar informativo
   const [open, setOpen] = React.useState(false);
@@ -59,7 +60,8 @@ export default function Proceso({basicInfo, textos, facultades, cursos}:Props)
   }
 
   //información de pago *************************************************************************
-  const [finData, setFinData] = React.useState<IfinData>({imagen:uploadLogo, voucher:'', fecha:'',pago:'0'})
+  const precio = certificados.filter((cer)=> cer.value === basicInfo.solicitud)[0].precio
+  const [finData, setFinData] = React.useState<IfinData>({imagen:uploadLogo, voucher:'', fecha:'',pago:precio.toString()})
   const [finVal, setFinVal] = React.useState<IfinVal>({imagen:false, voucher:false, fecha:false,pago:false})
 
   // Control del Stepper *************************************************************************
@@ -156,22 +158,22 @@ export default function Proceso({basicInfo, textos, facultades, cursos}:Props)
       validation={finVal}
       textos={textos}
       open={open}
+      certificados={certificados}
       basicInfo={basicInfo}
       setOpen={setOpen} />
   )
   
   const stepComponents:MyStep[] = [
-    {caption:"Información Básica", component:stepBasicData},
-    {caption:"Trabajador UNAC", component:stepUnacWork},
-    {caption:"Matricula anterior al 2010", component:stepBefore2010},
-    {caption:"Información de pago", component:stepFinInfo}
+    {caption:"Información Básica", component:stepBasicData, optional:false},
+    {caption:"Matricula anterior al 2010", component:stepBefore2010, optional:true, optParam: basicInfo.antiguo},
+    {caption:"Trabajador UNAC", component:stepUnacWork, optional:true, optParam: basicInfo.trabajador},
+    {caption:"Información de pago", component:stepFinInfo, optional:false}
   ]
-  
+
   return (
     <Box sx={{width:'100%', mt:2}}>
         <MyStepper 
           stepComponents={stepComponents}
-          basicInfo={basicInfo}
           activeStep={activeStep} 
           setActiveStep={setActiveStep}
           skipped={skipped} 

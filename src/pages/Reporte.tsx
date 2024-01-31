@@ -3,7 +3,7 @@ import SolicitudesService from '../services/SolicitudesService';
 import { Isolicitud } from '../interfaces/Isolicitud';
 import { Alert } from '@mui/material';
 import FiltroNombre from '../components/FiltroNombre';
-import DataTable from '../components/MUI/DataTable';
+import DataTable, { IColumn } from '../components/MUI/DataTable';
 
 const columns: IColumn[] = [
     { id: 'apellidos', label: 'Apellidos', minWidth: 150 },

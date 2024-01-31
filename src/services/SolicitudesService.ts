@@ -1,11 +1,11 @@
 import { IbasicInfo } from '../interfaces/IbasicInfo';
 import { IfinData } from '../interfaces/IfinData';
-import { Irow } from '../interfaces/Irow';
 import { IstudentData } from '../interfaces/IstudentData';
 import { firestore } from '../services/firebase';
 import { collection, query, where, getDocs ,serverTimestamp, addDoc, orderBy} from 'firebase/firestore'
 import { changeDate } from './util';
 import { Isolicitud } from '../interfaces/Isolicitud';
+import { Irow } from '../interfaces/Types';
 
 export default class SolicitudesService
 {

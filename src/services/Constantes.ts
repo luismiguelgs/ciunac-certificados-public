@@ -1,4 +1,7 @@
 import { styled } from '@mui/material/styles';
+import packageJson from '../../package.json';
+
+export const VERSION = packageJson.version
 
 export const NIVEL = [
     {value:'BASICO',label:'BÁSICO'},
@@ -38,9 +41,9 @@ export const CICLOS: CicloTupla[] = [
     ['INGLES', NIVEL[0].value, 9],
     ['INGLES', NIVEL[1].value, 9],
     ['INGLES', NIVEL[2].value, 9],
-    ['PORTUGUEZ', NIVEL[0].value, 5],
-    ['PORTUGUEZ', NIVEL[1].value, 4],
-    ['PORTUGUEZ', NIVEL[2].value, 3],
+    ['PORTUGUES', NIVEL[0].value, 5],
+    ['PORTUGUES', NIVEL[1].value, 4],
+    ['PORTUGUES', NIVEL[2].value, 3],
     ['ITALIANO', NIVEL[0].value, 5],
     ['ITALIANO', NIVEL[1].value, 4],
     ['ITALIANO', NIVEL[2].value, 3],

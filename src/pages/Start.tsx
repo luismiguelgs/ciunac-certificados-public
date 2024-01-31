@@ -1,17 +1,17 @@
-import { Box, Button, Grid, TextField, InputAdornment, Skeleton } from "@mui/material";
+import { Box, Button, Grid, TextField, InputAdornment, Skeleton, Typography } from "@mui/material";
 import {IbasicInfo, IbasicVal} from "../interfaces/IbasicInfo";
 import { useMask } from '@react-input/mask';
 import React, { useState } from 'react'
-import Icertificado from "../interfaces/Icertificado";
-import { Itexto } from "../interfaces/Itexto";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useNavigate } from "react-router-dom";
-import TableSimple from "../components/start/TableSimple";
+import TableSimple, { IColumn } from "../components/start/TableSimple";
 import MySelect from "../components/MUI/MySelect";
 import MySnackBar from "../components/MUI/MySnackBar";
 import { EmailIcon, PlayCircleFilledIcon } from "../services/icons";
 import Warning from "../components/start/Warning";
 import { validationBasicData } from "../services/validation";
+import { Icertificado, Itexto } from "../interfaces/Types";
+import { VERSION } from "../services/Constantes";
 
 const columns: IColumn[] = [
     { id: 'label', label: 'Certificado', minWidth: 150 },
@@ -46,7 +46,6 @@ export default function Start({certificados, data, textos, handleChange, handleC
         const _title = data.solicitud.split('_')
         setTitle(_title[0] + ' ' + _title[1] + ' ' + _title[2])
         setAuth(true) 
-        console.log(data);
         navigate("/proceso")
         //navigate("/test")
     }
@@ -137,6 +136,7 @@ export default function Start({certificados, data, textos, handleChange, handleC
                 </Grid>
                 <Grid item xs={12}  sm={6}>
                     <TableSimple columns={columns} rows={certificados} action={false} />
+                    <Typography variant="caption" display="block" gutterBottom>version: {VERSION}</Typography>
                 </Grid>
             </Grid>
             <MySnackBar 
