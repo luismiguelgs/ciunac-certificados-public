@@ -98,13 +98,13 @@ export default function Proceso({data, setData, textos, facultades, cursos, cert
         }
       break
       case 2:
-        if (validateUnacWork()) {
+        if (validationFinData(data,setOpen,setFinVal)) {
           setActiveStep((prevActiveStep) => prevActiveStep + 1)
           setSkipped(newSkipped)
         }
       break
       case 3:
-        if (validationFinData(data,setOpen,setFinVal)) {
+        if (validateUnacWork()) {
           setActiveStep((prevActiveStep) => prevActiveStep + 1)
           setSkipped(newSkipped)
         }
@@ -162,14 +162,28 @@ export default function Proceso({data, setData, textos, facultades, cursos, cert
       certificados={certificados}
       setOpen={setOpen} />
   )
-  
+  /*
   const stepComponents:MyStep[] = [
     {caption:"Información Básica", component:stepBasicData, optional:false},
     {caption:"Matricula anterior al 2010", component:stepBefore2010, optional:true, optParam: data.antiguo},
-    {caption:"Trabajador UNAC", component:stepUnacWork, optional:true, optParam: data.trabajador},
-    {caption:"Información de pago", component:stepFinInfo, optional:false}
+    {caption:"Información de pago", component:stepFinInfo, optional:false},
+    {caption:"Trabajador UNAC", component:stepUnacWork, optional:true, optParam: data.trabajador}
   ]
-
+  */
+  const stepComponents:MyStep[] = [
+    {caption:"Información Básica", component:stepBasicData, optional:false},
+    {caption:"Matricula anterior al 2010", component:stepBefore2010, optional:true, optParam: data.antiguo},
+  ]
+  if(data.trabajador){
+    stepComponents.push(
+      {caption:"Información de pago", component:stepFinInfo, optional:false},
+      {caption:"Trabajador UNAC", component:stepUnacWork, optional:true, optParam: data.trabajador}
+    )
+  }else{
+    stepComponents.push(
+      {caption:"Información de pago", component:stepFinInfo, optional:false}
+    )
+  }
   return (
     <Box sx={{width:'100%', mt:2}}>
         <MyStepper 
