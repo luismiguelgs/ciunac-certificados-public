@@ -1,55 +1,36 @@
 import { Box, Alert, Button, LinearProgress, Card, CardMedia, CardContent, Grid } from '@mui/material'
 import { VisuallyHiddenInput } from '../services/Constantes';
-import { IstudentData } from '../interfaces/IstudentData';
-import { IbasicInfo } from '../interfaces/IbasicInfo';
 import React from 'react';
-import SolicitudesService from '../services/SolicitudesService';
-import { useNavigate } from 'react-router-dom';
 import MySnackBar from './MUI/MySnackBar';
 import StorageService from '../services/StorageService';
 import { CloudUploadIcon, FolderIcon } from '../services/icons';
 import { Itexto } from '../interfaces/Types';
+import { Isolicitud } from '../interfaces/Isolicitud';
 
 type Props = {
-    basicData: IstudentData,
-    dataStr: string,
+    data: Isolicitud,
+    imagen: string,
     setConstancia: React.Dispatch<React.SetStateAction<string>>
     open: boolean,
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    textos:Itexto[],
-    basicInfo:IbasicInfo
+    textos:Itexto[]
 }
 
-export default function UnacWork({dataStr, setConstancia, open, setOpen, basicData, textos, basicInfo}:Props)
+export default function UnacWork({imagen, setConstancia, open, setOpen, data, textos}:Props)
 {
-    const [data,setData] = React.useState<any>([])
+    const [file,setFile] = React.useState<any>([])
     const [progress, setProgress] = React.useState<number>(0)
     const [enviar, setEnviar] = React.useState<boolean>(true)
-    //router
-    const navigate = useNavigate()
     
-    // Validar si hay registros anteior *****************************************************************
-    React.useEffect(()=>{
-        const fetchData = async() =>{
-            const result = await SolicitudesService.fetchRecord(basicData.idioma,basicData.nivel,basicInfo.dni,basicInfo.solicitud)
-            
-            if(result.length > 0){
-                console.log('existe registro anterior');
-                navigate('/cargo',{state:{data:result}})
-            }
-        }
-        fetchData()
-    },[])
-
     const handleClick = () => {
-        let name = data.name.split('.')
-        name = `${basicInfo.dni}-${basicData.idioma}-${basicData.nivel}.${name[1]}`
-        StorageService.uploadTrabajador(name,data,setEnviar,setProgress,setConstancia)
+        let name = file.name.split('.')
+        name = `${data.dni}-${data.idioma}-${data.nivel}.${name[1]}`
+        StorageService.uploadTrabajador(name,file,setEnviar,setProgress,setConstancia)
     }
     const handleChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { files } = e.target as HTMLInputElement
         const selectedFiles = files as FileList;
-        setData(selectedFiles?.[0])  
+        setFile(selectedFiles?.[0])  
         setEnviar(false)
     }
 
@@ -91,7 +72,7 @@ export default function UnacWork({dataStr, setConstancia, open, setOpen, basicDa
                         <CardMedia
                             component="img"
                             alt="documento"
-                            image={dataStr}
+                            image={imagen}
                         />
                         <CardContent>
                         </CardContent>

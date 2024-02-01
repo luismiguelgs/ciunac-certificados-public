@@ -1,14 +1,13 @@
 import React from 'react'
 import uploadLogo from '../assets/upload.svg'
-import { IstudentData, IstudentVal } from '../interfaces/IstudentData';
-import { IfinData, IfinVal } from '../interfaces/IfinData';
-import { IbasicInfo, IbasicVal } from '../interfaces/IbasicInfo';
 import { firestore } from '../services/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore'
 import ReCAPTCHA from 'react-google-recaptcha';
+import { Isolicitud } from '../interfaces/Isolicitud';
+import { IbasicVal, IfinVal, IstudentVal } from '../interfaces/Ivalidation';
 
 export function validationBasicData(
-  data:IbasicInfo, 
+  data:Isolicitud, 
   setOpen: React.Dispatch<React.SetStateAction<boolean>>,
   setVal: React.Dispatch<React.SetStateAction<IbasicVal>>,
   emailRegex:RegExp,
@@ -57,7 +56,7 @@ export function validationBasicData(
 }
 
 export function validationStudentData(
-    data:IstudentData,
+    data:Isolicitud,
     setOpen:React.Dispatch<React.SetStateAction<boolean>>,
     checked:boolean,
     setValidation:React.Dispatch<React.SetStateAction<IstudentVal>>
@@ -111,100 +110,87 @@ export function validationStudentData(
     setValidation((prevBasicVal)=>({...prevBasicVal, codigo:false}))
     return nombres && apellidos && celular
 }
-export function validationFinData(
-    data:IfinData,
-    setOpen:React.Dispatch<React.SetStateAction<boolean>>,
-    setValidation:React.Dispatch<React.SetStateAction<IfinVal>>,
-    trabajador:boolean
+export function validationFinData(data:Isolicitud, setOpen:React.Dispatch<React.SetStateAction<boolean>>, 
+  setValidation:React.Dispatch<React.SetStateAction<IfinVal>>,
 ):boolean{
     let imagen:boolean
     let voucher:boolean
     let fecha:boolean
-    let pago:boolean
-
-    //val imagen upload
-    if(trabajador){
-      imagen = true
-    }else{
-      if(data.imagen === uploadLogo){
-        imagen = false
-        setOpen(true)
-        setValidation((pfv)=>({...pfv, imagen:true}))
-      }else{
-        imagen = true
-        setOpen(true)
-        setValidation((pfv)=>({...pfv, imagen:false}))
-      }
+    
+    //validacion de imagen del voucher
+    const validarVoucherImagen = ():boolean => {
+        if(data.voucher === uploadLogo){
+            setOpen(true)
+            setValidation((pfv)=>({...pfv, imagen:true}))
+            return false
+        }else{
+            setOpen(false)
+            setValidation((pfv)=>({...pfv, imagen:false}))
+            return true
+        }
     }
-    //val monto pagado
-    if(trabajador){
-      if(data.pago === '' || +data.pago < 0 || +data.pago > 100){
-        pago = false
-        setOpen(!pago)
-        setValidation((pfv)=>({...pfv, pago:true}))
-      }else{
-        pago = true
-        setOpen(true)
-        setValidation((pfv)=>({...pfv, pago:false}))
-      }
-    }else{
-      if(data.pago === '' || +data.pago <= 0 || +data.pago > 100){
-        pago = false
-        setOpen(!pago)
-        setValidation((pfv)=>({...pfv, pago:true}))
-      }else{
-        pago = true
-        setOpen(true)
-        setValidation((pfv)=>({...pfv, pago:false}))
-      }
+    //validación del número de voucher
+    const validarVoucherNumero = ():boolean => {
+        if(data.numero_voucher === '' || (data.numero_voucher as string).length < 15){
+            setOpen(true)
+            setValidation((pfv)=>({...pfv, voucher:true}))
+            return false
+          }
+          else{
+            setOpen(false)
+            setValidation((pfv)=>({...pfv, voucher:false}))
+            return true
+          }
     }
-    //val voucher
-    if(trabajador){
-      voucher = true
-    }else{
-      if(data.voucher === '' || data.voucher.length < 15){
-        voucher = false
-        setOpen(true)
-        setValidation((pfv)=>({...pfv, voucher:true}))
-      }
-      else{
-        voucher = true
-        setOpen(false)
-        setValidation((pfv)=>({...pfv, voucher:false}))
-      }
-    }
-    //val fecha
-    if(trabajador){
-      fecha = true
-    }else{
-      if(data.fecha === ''){
-        fecha = false
-        setOpen(true)
-        setValidation((pfv)=>({...pfv, fecha:true}))
-      }
-      else{
-        if(new Date() < new Date(data.fecha)){
-            fecha = false
+    //validación de la fecha del voucher
+    const validarVoucherFecha = ():boolean =>{
+        if(data.fecha_pago === ''){
             setOpen(true)
             setValidation((pfv)=>({...pfv, fecha:true}))
+            return false
+          }
+          else{
+            if(new Date() < new Date(data.fecha_pago as string)){
+                setOpen(true)
+                setValidation((pfv)=>({...pfv, fecha:true}))
+                return false
+            }
+            else{
+                setOpen(false)
+                setValidation((pfv)=>({...pfv, fecha:false}))
+                return true
+            }
+          }
+    }
+
+    if(data.trabajador){
+        if(+data.pago === 0){
+            imagen = true
+            voucher = true
+            fecha = true
+            setOpen(false)
+            setValidation((pfv)=>({...pfv, imagen:false, voucher:false, fecha:false}))
         }
         else{
-            setOpen(false)
-            fecha = true
-            setValidation((pfv)=>({...pfv, fecha:false}))
-        }
-      }
+            imagen = validarVoucherImagen()
+            voucher = validarVoucherNumero()
+            fecha = validarVoucherFecha()
+        } 
+    }else{
+      imagen = validarVoucherImagen()
+      voucher = validarVoucherNumero()
+      fecha = validarVoucherFecha()
     }
-    return imagen && voucher && fecha && pago
+   
+    return imagen && voucher && fecha
 }
-export function validarRegistroAnterior(basicInfo:IbasicInfo, basicData:IstudentData)
+export function validarRegistroAnterior(data:Isolicitud)
 {
-  
-      //buscar registro en la base de datos
-      const dni = basicInfo.dni
-      const idioma = basicData.idioma
-      const nivel = basicData.nivel
-      const documento = basicInfo.solicitud
+    //buscar registro en la base de datos
+    const dni = data.dni
+    const idioma = data.idioma
+    const nivel = data.nivel
+    const documento = data.solicitud
       //base de datos
       const db_solicitudes = collection(firestore, 'solicitudes');
 

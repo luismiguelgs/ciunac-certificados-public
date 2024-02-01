@@ -5,48 +5,31 @@ import BasicData from '../components/BasicData'
 import UnacWork from '../components/UnacWork'
 import FinInfo from '../components/FinInfo'
 import Before2010 from '../components/Before2010'
-import { IfinData, IfinVal } from '../interfaces/IfinData'
-import { IstudentData, IstudentVal } from '../interfaces/IstudentData'
-import uploadLogo from '../assets/upload.svg'
-import {IbasicInfo } from '../interfaces/IbasicInfo'
 import { validationFinData, validationStudentData } from '../services/validation'
 import { Icurso, Ifacultad, Itexto, Irow, Icertificado } from '../interfaces/Types'
 import MyStepper, { MyStep } from '../components/MUI/MyStepper'
+import { Isolicitud } from '../interfaces/Isolicitud'
+import uploadLogo from '../assets/upload.svg'
+import { IfinVal, IstudentVal } from '../interfaces/Ivalidation'
 
 type Props = {
-  basicInfo: IbasicInfo
+  data: Isolicitud,
+  setData: React.Dispatch<React.SetStateAction<Isolicitud>>,
   textos:Itexto[],
   facultades:Ifacultad[],
   cursos:Icurso[],
   certificados: Icertificado[]
 }
 
-export default function Proceso({basicInfo, textos, facultades, cursos, certificados}:Props)
+export default function Proceso({data, setData, textos, facultades, cursos, certificados}:Props)
 {
-  //estado de snackbar informativo
-  const [open, setOpen] = React.useState(false);
-   
-  //información básica *****************************************************************
-  const [basicData, setBasicData] = React.useState<IstudentData>({
-    apellidos: '', nombres: '', celular:'', idioma:'INGLES', nivel:'BASICO', facultad:'PAR', codigo:''
-  })
+  //página de datos básicos ******************************************************************************
+  const [open, setOpen] = React.useState(false); //snackbar
   const [basicVal, setBasicVal] = React.useState<IstudentVal>({apellidos:false, nombres:false, celular:false, codigo:false})
-  
   //datos de alumno unac
   const [checked, setChecked] = React.useState<boolean>(false)
 
-  //información del trabajador (opcional) ************************************************
-  const [constanciaTU, setConstanciaTU] = React.useState<string>(uploadLogo)
-
-  const validateUnacWork = () =>{
-    if(constanciaTU === uploadLogo){
-      setOpen(true)
-      return false
-    }
-    setOpen(false)
-    return true
-  }
-  //arreglo de cursos con fechas antes del 2010 (opcional) *******************************
+  //arreglo de cursos con fechas antes del 2010 (opcional) **********************************************
   const [rows, setRows] = React.useState<Irow[]>([])
 
   //validacion
@@ -59,9 +42,30 @@ export default function Proceso({basicInfo, textos, facultades, cursos, certific
     return false
   }
 
+  //información del trabajador (opcional) ************************************************
+  const [constanciaTU, setConstanciaTU] = React.useState<string>(uploadLogo)
+
+  const validateUnacWork = () =>{
+    console.log(constanciaTU);
+    if(constanciaTU === uploadLogo){
+      setOpen(true)
+      return false
+    }
+    setOpen(false)
+    return true
+  }
+  
   //información de pago *************************************************************************
-  const precio = certificados.filter((cer)=> cer.value === basicInfo.solicitud)[0].precio
-  const [finData, setFinData] = React.useState<IfinData>({imagen:uploadLogo, voucher:'', fecha:'',pago:precio.toString()})
+  React.useEffect(()=>{
+    const precio = certificados.filter((cer)=> cer.value === data.solicitud)[0].precio
+    if(data.trabajador){
+      setData((prevData)=>({...prevData, pago:(precio-precio*0.8).toString(), voucher:uploadLogo}))
+    }else{
+      setData((prevData)=>({...prevData, pago:precio.toString(), voucher:uploadLogo}))
+    }
+    
+  },[data.solicitud, data.trabajador])
+ 
   const [finVal, setFinVal] = React.useState<IfinVal>({imagen:false, voucher:false, fecha:false,pago:false})
 
   // Control del Stepper *************************************************************************
@@ -80,26 +84,27 @@ export default function Proceso({basicInfo, textos, facultades, cursos, certific
     //validar antes de pasar al proceso siguiente
     switch (activeStep) {
       case 0:
-        if (validationStudentData(basicData,setOpen,checked,setBasicVal)) {
-          if(!checked) setBasicData((prevFormData)=>({...prevFormData, facultad:''}))
+        if (validationStudentData(data,setOpen,checked,setBasicVal)) {
+          if(!checked) setData((prevFormData)=>({...prevFormData, facultad:''}))
+          console.log(data);
           setActiveStep((prevActiveStep) => prevActiveStep + 1)
           setSkipped(newSkipped)
         }
       break;
       case 1:
-        if (validateUnacWork()) {
-          setActiveStep((prevActiveStep) => prevActiveStep + 1)
-          setSkipped(newSkipped)
-        }
-      break
-      case 2:
         if (validate2010()) {
           setActiveStep((prevActiveStep) => prevActiveStep + 1)
           setSkipped(newSkipped)
         }
       break
+      case 2:
+        if (validateUnacWork()) {
+          setActiveStep((prevActiveStep) => prevActiveStep + 1)
+          setSkipped(newSkipped)
+        }
+      break
       case 3:
-        if (validationFinData(finData,setOpen,setFinVal,basicInfo.trabajador)) {
+        if (validationFinData(data,setOpen,setFinVal)) {
           setActiveStep((prevActiveStep) => prevActiveStep + 1)
           setSkipped(newSkipped)
         }
@@ -111,9 +116,7 @@ export default function Proceso({basicInfo, textos, facultades, cursos, certific
   const stepFinish = (
     <Finish
       setActiveStep={setActiveStep}
-      basicInfo={basicInfo} 
-      studentData={basicData} 
-      finData={finData} 
+      data={data} 
       textos={textos}
       constancia={constanciaTU}
       data2010={rows} />
@@ -121,9 +124,9 @@ export default function Proceso({basicInfo, textos, facultades, cursos, certific
   const stepBasicData = (
     <BasicData
       facultades={facultades}
-      data={basicData} 
+      data={data} 
       cursos={cursos}
-      setData={setBasicData}
+      setData={setData}
       validation={basicVal} 
       checked={checked}
       textos={textos}
@@ -133,17 +136,16 @@ export default function Proceso({basicInfo, textos, facultades, cursos, certific
   )
   const stepUnacWork = (
     <UnacWork 
-      dataStr={constanciaTU} 
+      imagen={constanciaTU} 
       setConstancia={setConstanciaTU}
       open={open} 
-      basicInfo={basicInfo}
       textos={textos}
       setOpen={setOpen}
-      basicData={basicData} />
+      data={data} />
   )
   const stepBefore2010 = (
     <Before2010 
-      data={basicData} 
+      data={data} 
       rows={rows} 
       setRows={setRows}
       textos={textos}
@@ -152,21 +154,19 @@ export default function Proceso({basicInfo, textos, facultades, cursos, certific
   )
   const stepFinInfo = (
     <FinInfo 
-      finData={finData} 
-      basicData={basicData}
-      setFinData={setFinData}
+      data={data}
+      setData={setData}
       validation={finVal}
       textos={textos}
       open={open}
       certificados={certificados}
-      basicInfo={basicInfo}
       setOpen={setOpen} />
   )
   
   const stepComponents:MyStep[] = [
     {caption:"Información Básica", component:stepBasicData, optional:false},
-    {caption:"Matricula anterior al 2010", component:stepBefore2010, optional:true, optParam: basicInfo.antiguo},
-    {caption:"Trabajador UNAC", component:stepUnacWork, optional:true, optParam: basicInfo.trabajador},
+    {caption:"Matricula anterior al 2010", component:stepBefore2010, optional:true, optParam: data.antiguo},
+    {caption:"Trabajador UNAC", component:stepUnacWork, optional:true, optParam: data.trabajador},
     {caption:"Información de pago", component:stepFinInfo, optional:false}
   ]
 

@@ -11,12 +11,11 @@ import MySwitch from "../components/MUI/MySwitch"
 import DialogAlert from "../components/MUI/DialogAlert"
 import { Irow, Itexto } from "../interfaces/Types"
 import { ArrowBackIcon, AssignmentTurnedInIcon, CloudDownloadIcon } from "../services/icons"
+import { Isolicitud } from "../interfaces/Isolicitud"
 
 type Props = {
   handleReset?: React.MouseEventHandler
-  basicInfo:IbasicInfo,
-  studentData:IstudentData,
-  finData:IfinData
+  data:Isolicitud
   setActiveStep:React.Dispatch<React.SetStateAction<number>>
   constancia:string,
   data2010:Irow[],
@@ -27,7 +26,7 @@ interface Condiciones{
   aceptar:boolean
 }
 
-export default function Finish({ basicInfo, studentData, finData, setActiveStep, constancia, data2010, textos }:Props)
+export default function Finish({ data, setActiveStep, constancia, data2010, textos }:Props)
 {
   const [success,setSuccess] = React.useState<boolean>(false)
   const [loading, setLoading] = React.useState<boolean>(false)
@@ -49,22 +48,22 @@ export default function Finish({ basicInfo, studentData, finData, setActiveStep,
   const handleFinish = () =>{
     setLoading(true)
     //guardar nuevo registro
-    SolicitudesService.newItem(basicInfo,studentData,finData,constancia,data2010)
+    SolicitudesService.newItem(data,constancia,data2010)
     setLoading(false)
     setSuccess(true)
     setOpen(false)
   }
   const exportPDF = () => {
       const blobPdf = PDFService.exportar(textos,{
-        solicitud:basicInfo.solicitud,
+        solicitud:data.solicitud,
         creado:new Date().toLocaleString(),
-        apellidos: studentData.apellidos,
-        nombres: studentData.nombres,
-        dni: basicInfo.dni,
-        idioma: studentData.idioma,
-        nivel: studentData.nivel,
-        pago:finData.pago,
-        voucher:finData.voucher
+        apellidos: data.apellidos,
+        nombres: data.nombres,
+        dni: data.dni,
+        idioma: data.idioma,
+        nivel: data.nivel,
+        pago:data.pago,
+        voucher:data.numero_voucher
       }, false)
 
       const blobUrl = URL.createObjectURL(blobPdf);
@@ -73,7 +72,7 @@ export default function Finish({ basicInfo, studentData, finData, setActiveStep,
       const a = document.createElement('a')
       a.style.display = 'none'
       a.href = blobUrl
-      a.download = `${basicInfo.dni}-${studentData.idioma}-${studentData.nivel}.pdf`
+      a.download = `${data.dni}-${data.idioma}-${data.nivel}.pdf`
 
       // Agregar el enlace al documento y hacer clic para iniciar la descarga
       document.body.appendChild(a);
@@ -102,7 +101,7 @@ export default function Finish({ basicInfo, studentData, finData, setActiveStep,
             </Box> )
         }
         {
-          !success && <DataDisplay basicInfo={basicInfo} studentData={studentData} finData={finData}/>
+          !success && <DataDisplay data={data}/>
         }
         <Box sx={{flex: '1 1 auto'}}>
           <MySwitch 
@@ -148,8 +147,8 @@ export default function Finish({ basicInfo, studentData, finData, setActiveStep,
         </Box>
       </Box>
       <DialogAlert 
-        title={basicInfo.solicitud}
-        content={`Enviar datos correspondientes a su solicitud: ${basicInfo.solicitud}`}
+        title={data.solicitud}
+        content={`Enviar datos correspondientes a su solicitud: ${data.solicitud}`}
         open={open}
         setOpen={setOpen}
         actions={true}

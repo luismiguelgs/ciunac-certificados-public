@@ -1,97 +1,93 @@
 import { Grid, Typography } from '@mui/material'
-import { IbasicInfo } from '../interfaces/IbasicInfo'
-import { IstudentData } from '../interfaces/IstudentData'
-import { IfinData } from '../interfaces/IfinData'
+import { Isolicitud } from '../interfaces/Isolicitud'
 
 type Props = {
-    basicInfo:IbasicInfo,
-    studentData:IstudentData,
-    finData:IfinData
+    data:Isolicitud
 }
 
-export default function DataDisplay({basicInfo,studentData,finData}:Props)
+export default function DataDisplay({data}:Props)
 {
     return(
         <Grid container spacing={2} justifyContent={'center'}>
           <Grid item xs={12} sm={6} >
             <Typography variant="subtitle2" gutterBottom style={{ textAlign: 'left', marginLeft:'10px' }}>
-              Tipo de solicitud: {basicInfo.solicitud}
+              Tipo de solicitud: {data.solicitud}
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6} >
             <Typography variant="subtitle2" gutterBottom style={{ textAlign: 'left', marginLeft:'10px'}}>
-              Email: {basicInfo.email}
+              Email: {data.email}
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="subtitle2" gutterBottom style={{ textAlign: 'left', marginLeft:'10px'}}>
-              DNI: {basicInfo.dni}
+              DNI: {data.dni}
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="subtitle2" gutterBottom style={{ textAlign: 'left', marginLeft:'10px'}}>
-              Trabajador UNAC: {basicInfo.trabajador ? 'si':'no'}
+              Trabajador UNAC: {data.trabajador ? 'si':'no'}
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="subtitle2" gutterBottom style={{ textAlign: 'left', marginLeft:'10px'}}>
-              Matrícula anterior al 2010: {basicInfo.antiguo ? 'si':'no'}
+              Matrícula anterior al 2010: {data.antiguo ? 'si':'no'}
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="subtitle2" gutterBottom style={{ textAlign: 'left',marginLeft:'10px' }}>
-              Celular: {studentData.celular}
+              Celular: {data.celular}
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="subtitle2" gutterBottom style={{ textAlign: 'left',marginLeft:'10px' }}>
-              Apellidos: {studentData.apellidos}
+              Apellidos: {data.apellidos}
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="subtitle2" gutterBottom style={{ textAlign: 'left',marginLeft:'10px' }}>
-              Nombres: {studentData.nombres}
+              Nombres: {data.nombres}
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="subtitle2" gutterBottom style={{ textAlign: 'left',marginLeft:'10px' }}>
-              Idioma: {studentData.idioma}
+              Idioma: {data.idioma}
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Typography variant="subtitle2" gutterBottom style={{ textAlign: 'left',marginLeft:'10px' }}>
-              Nivel: {studentData.nivel}
+              Nivel: {data.nivel}
             </Typography>
           </Grid>
           {
-            studentData.facultad && 
+            data.facultad && 
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle2" gutterBottom style={{ textAlign: 'left',marginLeft:'10px' }}>
-                Facultad: {studentData.facultad}
+                Facultad: {data.facultad}
               </Typography>
             </Grid>
           }
           {
-            studentData.codigo &&
+            data.codigo &&
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle2" gutterBottom style={{ textAlign: 'left',marginLeft:'10px' }}>
-                Código: {studentData.codigo}
+                Código: {data.codigo}
               </Typography>
             </Grid>
           }
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle2" gutterBottom style={{ textAlign: 'left',marginLeft:'10px' }}>
-                Código de voucher: {finData.voucher}
+                Código de voucher: {data.numero_voucher}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle2" gutterBottom style={{ textAlign: 'left',marginLeft:'10px' }}>
-                Fecha de Pago: {finData.fecha}
+                Fecha de Pago: {data.fecha_pago}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography variant="subtitle2" gutterBottom style={{ textAlign: 'left',marginLeft:'10px' }}>
-                Monto Pagado: S/{finData.pago}
+                Monto Pagado: S/{data.pago}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>

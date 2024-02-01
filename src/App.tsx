@@ -3,14 +3,15 @@ import Proceso from './pages/Proceso'
 import Start from './pages/Start'
 import { Toolbar, Box, AppBar, Typography } from '@mui/material'
 import { useState } from 'react'
-import {IbasicInfo} from './interfaces/IbasicInfo'
 import Preloader from './components/Preloader';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import PrivateRoutes from './pages/PrivateRoutes'
 import Cargo from './pages/Cargo'
 import Reporte from './pages/Reporte'
 import { Icertificado, Icurso, Ifacultad, Itexto } from './interfaces/Types'
-import Test from './pages/Test'
+import { Isolicitud } from './interfaces/Isolicitud'
+import uploadLogo from './assets/upload.svg'
+//import Test from './pages/Test'
 
 function App() 
 {
@@ -21,23 +22,24 @@ function App()
   const [cursos, setCursos] = useState<Icurso[]>([])
   const [auth, setAuth] = useState<boolean>(false)
   const [title, setTitle] = useState<string>('CIUNAC - Solicitudes')
-  const [basicInfo, setBasicInfo] = useState<IbasicInfo>({
+  const [solicitud, setSolicitud] = useState<Isolicitud>({
     solicitud:'CERTIFICADO_DE_ESTUDIO',
     email:'',
     dni:'',
+    codigo:'',
+    facultad:'PAR',
     trabajador:false,
-    antiguo:false
+    antiguo:false,
+    apellidos: '',
+    nombres: '',
+    celular: '',
+    idioma: 'INGLES',
+    nivel: 'BASICO',
+    pago: '',
+    voucher: uploadLogo,
+    numero_voucher:'',
+    fecha_pago: '',
   })
-  const handleChangeBasicInfo = (event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const {name, value} = event.target
-    setBasicInfo((prevFormData)=>({...prevFormData, [name]:value}))
-  }
-  const handleChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setBasicInfo({
-      ...basicInfo,
-      [event.target.name]: event.target.checked,
-    });
-  };
   
   return(
       <Box sx={{ flexGrow: 1 }}>
@@ -55,21 +57,26 @@ function App()
             <Route path='/' element={
               <Start 
                 certificados={certificados}
-                data={basicInfo} 
+                data={solicitud} 
                 textos={textos}
                 setAuth={setAuth}
                 setTitle={setTitle}
-                handleChange={handleChangeBasicInfo} 
-                handleChangeSwitch={handleChangeSwitch}/> 
+                setData={setSolicitud}/> 
             } /> 
             <Route element={<PrivateRoutes auth={auth}/>}>
               <Route path='/proceso' element={
-                <Proceso basicInfo={basicInfo} textos={textos} facultades={facultades} cursos={cursos} certificados={certificados}/>
+                <Proceso 
+                  data={solicitud} 
+                  setData={setSolicitud}
+                  textos={textos} 
+                  facultades={facultades} 
+                  cursos={cursos} 
+                  certificados={certificados}/>
               } />
               <Route path='/cargo' element={<Cargo textos={textos} />} />
             </Route>
             <Route path='/reporte' element={<Reporte />} />
-            <Route path='/test' element={<Test basicInfo={basicInfo} textos={textos} facultades={facultades} cursos={cursos} certificados={certificados}/>} />
+            {/*<Route path='/test' element={<Test basicInfo={basicInfo} textos={textos} facultades={facultades} cursos={cursos} certificados={certificados}/>} />*/}
             <Route path="*" element={<div><p>Página no disponible: 404!</p><Link to={'/'} >Inicio</Link></div>} />
           </Routes>
         </BrowserRouter>

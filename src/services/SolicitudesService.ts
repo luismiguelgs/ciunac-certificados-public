@@ -44,33 +44,33 @@ export default class SolicitudesService
           return data;
         });
     }
-    public static async newItem(basicInfo:IbasicInfo,studentData:IstudentData, finData:IfinData, constancia:string, data2010:Irow[]){
-        const data = {
-            solicitud:basicInfo.solicitud,
+    public static async newItem(data:Isolicitud, constancia:string, data2010:Irow[]){
+        const dataS = {
+            solicitud:data.solicitud,
             estado:'NUEVO',
-            pago:+finData.pago,
-            dni:basicInfo.dni,
-            email:basicInfo.email,
-            trabajador:basicInfo.trabajador,
-            antiguo:basicInfo.antiguo,
-            nombres:studentData.nombres,
-            apellidos:studentData.apellidos,
-            celular:studentData.celular,
-            idioma:studentData.idioma,
-            nivel:studentData.nivel,
-            facultad:studentData.facultad,
-            codigo:studentData.codigo,
+            pago:+data.pago,
+            dni:data.dni,
+            email:data.email,
+            trabajador:data.trabajador,
+            antiguo:data.antiguo,
+            nombres:data.nombres,
+            apellidos:data.apellidos,
+            celular:data.celular,
+            idioma:data.idioma,
+            nivel:data.nivel,
+            facultad:data.facultad,
+            codigo:data.codigo,
             certificado_trabajo:constancia,
-            voucher:finData.imagen,
-            numero_voucher:finData.voucher,
-            fecha_pago: finData.fecha,
+            voucher:data.voucher,
+            numero_voucher:data.numero_voucher,
+            fecha_pago: data.fecha_pago,
             manual:false,
             creado:serverTimestamp(),
             modificado:serverTimestamp()
         }
         let docRef = null
         try{
-          docRef = await addDoc(this.db, data)
+          docRef = await addDoc(this.db, dataS)
         }catch(err){
           console.log(err);
         }

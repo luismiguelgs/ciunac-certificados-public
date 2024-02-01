@@ -2,61 +2,63 @@ import { Box, Alert, Button, TextField,Grid, LinearProgress, Card, CardMedia, Ca
 import { VisuallyHiddenInput } from '../services/Constantes';
 import React from 'react';
 import { useMask } from '@react-input/mask';
-import { IfinData, IfinVal } from '../interfaces/IfinData';
-import { IstudentData } from '../interfaces/IstudentData';
-import { IbasicInfo } from '../interfaces/IbasicInfo';
 import MySnackBar from './MUI/MySnackBar';
 import StorageService from '../services/StorageService';
 import { CloudUploadIcon, FolderIcon } from '../services/icons';
 import { Icertificado, Itexto } from '../interfaces/Types';
 import MySelect from './MUI/MySelect';
+import { Isolicitud } from '../interfaces/Isolicitud';
+import { IfinVal } from '../interfaces/Ivalidation';
 
 type Props = {
-    basicData: IstudentData,
-    finData: IfinData,
-    setFinData: React.Dispatch<React.SetStateAction<IfinData>>,
+    data: Isolicitud,
+    setData: React.Dispatch<React.SetStateAction<Isolicitud>>,
     validation: IfinVal,
     open:boolean,
     textos:Itexto[],
-    basicInfo:IbasicInfo,
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
     certificados : Icertificado[]
 }
 
-export default function FinInfo({finData,basicData, setFinData, validation, open, setOpen, textos, basicInfo, certificados}:Props)
+export default function FinInfo({data, setData, validation, open, setOpen, textos, certificados}:Props)
 {
-    const [data,setData] = React.useState<any>([])
+    const [file,setFile] = React.useState<any>([])
     const [progress, setProgress] = React.useState<number>(0)
     const [enviar, setEnviar] = React.useState<boolean>(true)
 
-    const precio = +certificados.filter((cer)=> cer.value === basicInfo.solicitud)[0].precio
+    const precio = +certificados.filter((cer)=> cer.value === data.solicitud)[0].precio
+    let myData:any[] = []
 
-    const myData:any[] = [
-        {value:precio.toString(), label:`S/${precio.toFixed(2)} - precio normal`},
-        {value:(precio - precio*0.8).toString(), label:`S/${(precio - precio*0.8).toFixed(2)} - presentar certificado de trabajo`},
-        {value:(precio*0).toString(), label:`S/${(precio*0).toFixed(2)} - presentar certificado de trabajo(CAS)`},
-    ]
-
+    if(data.trabajador){
+        myData = [
+            {value:(precio - precio*0.8).toString(), label:`S/${(precio - precio*0.8).toFixed(2)} - presentar certificado de trabajo`},
+            {value:(precio*0).toString(), label:`S/${(precio*0).toFixed(2)} - presentar certificado de trabajo(CAS)`},
+        ]
+    }else{
+        myData = [
+            {value:precio.toString(), label:`S/${precio.toFixed(2)} - precio normal`},
+        ]
+    }
     const voucherRef = useMask({ mask: '_______________', replacement: { _: /\d/ } });
 
     const handleChange = (event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const {name, value} = event.target
-        setFinData((prevFormData)=>({...prevFormData, [name]:value}))
+        setData((prevFormData)=>({...prevFormData, [name]:value}))
     }
       const handleChangeImg = (img:string) =>{
-        setFinData((prevFormData)=>({...prevFormData, imagen:img}))
+        setData((prevFormData)=>({...prevFormData, voucher:img}))
       }
 
     const handleClick = () => {
-        let name = data.name.split('.')
-        name = `${basicInfo.dni}-${basicData.idioma}-${basicData.nivel}.${name[1]}`
+        let name = file.name.split('.')
+        name = `${data.dni}-${data.idioma}-${data.nivel}.${name[1]}`
 
-        StorageService.uploadVoucher(name,data,setEnviar,setProgress,handleChangeImg)
+        StorageService.uploadVoucher(name,file,setEnviar,setProgress,handleChangeImg)
     }
     const handleChangeFile = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { files } = e.target as HTMLInputElement
         const selectedFiles = files as FileList;
-        setData(selectedFiles?.[0])  
+        setFile(selectedFiles?.[0])  
         setEnviar(false)
     }
 
@@ -102,9 +104,9 @@ export default function FinInfo({finData,basicData, setFinData, validation, open
                         sx={{mt:2,width:'80%'}}
                         required
                         error={validation.voucher}
-                        value={finData.voucher}
+                        value={data.numero_voucher}
                         onChange={e=>handleChange(e)}
-                        name="voucher"
+                        name="numero_voucher"
                         label="Número de Voucher"
                         helperText={ validation.voucher && "Ingrese el número de voucher"}
                     />
@@ -113,7 +115,7 @@ export default function FinInfo({finData,basicData, setFinData, validation, open
                         handleChange={e=>handleChange(e)}
                         name='pago'
                         error={validation.pago}
-                        value={finData.pago}
+                        value={data.pago}
                         label='Monto pagado'
                         helperText={validation.pago && "Ingrese el monto pagado / monto inválido"}
                         data={myData}
@@ -123,9 +125,9 @@ export default function FinInfo({finData,basicData, setFinData, validation, open
                         sx={{mt:2, width:'80%'}}
                         required
                         error={validation.fecha}
-                        value={finData.fecha}
+                        value={data.fecha_pago}
                         onChange={e=>handleChange(e)}
-                        name="fecha"
+                        name="fecha_pago"
                         InputLabelProps={{shrink: true,}}
                         label="Fecha de pago"
                         helperText={ validation.fecha && "Ingrese la fecha de pago válida"}
@@ -136,7 +138,7 @@ export default function FinInfo({finData,basicData, setFinData, validation, open
                         <CardMedia
                             component="img"
                             alt="documento"
-                            image={finData.imagen}
+                            image={data.voucher}
                         />
                         <CardContent>
                         </CardContent>

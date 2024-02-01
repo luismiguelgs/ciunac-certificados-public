@@ -2,11 +2,13 @@ import { Box, TextField, Button, Alert } from "@mui/material"
 import React from "react"
 import { MES, CICLOS }  from '../services/Constantes'
 import { useMask } from '@react-input/mask';
-import { IstudentData } from "../interfaces/IstudentData";
 import MySnackBar from "./MUI/MySnackBar";
 import TableSimple, { IColumn } from "./start/TableSimple";
 import MySelect from "./MUI/MySelect";
 import { IformData, Irow, Itexto } from "../interfaces/Types";
+import { useNavigate } from "react-router-dom";
+import SolicitudesService from "../services/SolicitudesService";
+import { Isolicitud } from "../interfaces/Isolicitud";
 
 const columns: IColumn[] = [
     { id: 'ciclo', label: 'CICLO', minWidth: 150 },
@@ -16,7 +18,7 @@ const columns: IColumn[] = [
 ];
 
 type Props = {
-    data: IstudentData,
+    data: Isolicitud,
     rows: Irow[],
     setRows: React.Dispatch<React.SetStateAction<Irow[]>>
     open:boolean,
@@ -29,6 +31,21 @@ export default function Before2010({ data, rows, setRows, open, setOpen,textos }
     //variables de prueba
     let niveles: any[] = []
     let annos: any[] = []
+
+    // Validar si hay registros anteior *****************************************************************
+    const navigate = useNavigate()
+    React.useEffect(()=>{
+        const fetchData = async() =>{
+            const result = await SolicitudesService.fetchRecord(
+                data.idioma,data.nivel,data.dni,data.solicitud)
+            
+            if(result.length > 0){
+                console.log('existe registro anterior');
+                navigate('/cargo',{state:{data:result}})
+            }
+        }
+        fetchData()
+    },[])
 
     const poblarAnnos = () =>{
         for (let index = 2000; index < 2010; index++) {

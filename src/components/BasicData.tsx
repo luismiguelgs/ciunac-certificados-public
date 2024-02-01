@@ -2,15 +2,16 @@ import { TextField, InputAdornment, Grid, Alert, Box } from '@mui/material'
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { NIVEL} from '../services/Constantes';
 import { useMask } from '@react-input/mask';
-import { IstudentData, IstudentVal } from '../interfaces/IstudentData';
+import { IstudentVal } from '../interfaces/IstudentData';
 import MySnackBar from './MUI/MySnackBar';
 import MySelect from './MUI/MySelect';
 import MySwitch from './MUI/MySwitch';
 import { Icurso, Ifacultad, Itexto } from '../interfaces/Types';
+import { Isolicitud } from '../interfaces/Isolicitud';
 
 type Props = {
-    data: IstudentData,
-    setData:React.Dispatch<React.SetStateAction<IstudentData>>,
+    data: Isolicitud,
+    setData:React.Dispatch<React.SetStateAction<Isolicitud>>,
     validation:IstudentVal,
     checked:boolean,
     setChecked:React.Dispatch<React.SetStateAction<boolean>>,

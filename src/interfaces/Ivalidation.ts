@@ -1,11 +1,12 @@
-export interface IstudentData{
-    apellidos:string,
-    nombres:string,
-    celular:string,
-    facultad:string,
-    codigo:string
-    idioma:string,
-    nivel:string
+export interface IbasicVal{
+    email:boolean,
+    dni:boolean,
+}
+export interface IfinVal{
+    imagen:boolean,
+    voucher:boolean,
+    pago:boolean
+    fecha:boolean
 }
 export interface IstudentVal{
     apellidos:boolean,

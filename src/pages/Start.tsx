@@ -12,6 +12,7 @@ import Warning from "../components/start/Warning";
 import { validationBasicData } from "../services/validation";
 import { Icertificado, Itexto } from "../interfaces/Types";
 import { VERSION } from "../services/Constantes";
+import { Isolicitud } from "../interfaces/Isolicitud";
 
 const columns: IColumn[] = [
     { id: 'label', label: 'Certificado', minWidth: 150 },
@@ -20,15 +21,14 @@ const columns: IColumn[] = [
 
 type Props = {
     certificados:Icertificado[],
-    data:IbasicInfo,
+    data:Isolicitud,
+    setData: React.Dispatch<React.SetStateAction<Isolicitud>>,
     textos:Itexto[],
     setTitle: React.Dispatch<React.SetStateAction<string>>,
     setAuth: React.Dispatch<React.SetStateAction<boolean>>,
-    handleChange(e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void,
-    handleChangeSwitch(event: React.ChangeEvent<HTMLInputElement>):void,
 }
 
-export default function Start({certificados, data, textos, handleChange, handleChangeSwitch, setTitle, setAuth}:Props)
+export default function Start({certificados, data, textos, setData, setTitle, setAuth}:Props)
 {
     const navigate = useNavigate()
     const captchaRef = React.useRef<ReCAPTCHA>(null)
@@ -41,15 +41,26 @@ export default function Start({certificados, data, textos, handleChange, handleC
     //estado de snackbar informativo
     const [open, setOpen] = useState<boolean>(false);
 
+    const handleChange = (event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const {name, value} = event.target
+        setData((prevFormData)=>({...prevFormData, [name]:value}))
+    }
+    const handleChangeSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setData({
+          ...data,
+          [event.target.name]: event.target.checked,
+        });
+    };
+
     //iniciar proceso
     const startProcess = () =>{
         const _title = data.solicitud.split('_')
         setTitle(_title[0] + ' ' + _title[1] + ' ' + _title[2])
         setAuth(true) 
+        console.log(data);
         navigate("/proceso")
         //navigate("/test")
     }
-
     const handleClick = () => {
         if(validationBasicData(data,setOpen,setVal,emailRegex,captchaRef)){
             startProcess()
