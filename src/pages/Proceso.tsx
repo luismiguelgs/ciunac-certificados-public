@@ -162,14 +162,6 @@ export default function Proceso({data, setData, textos, facultades, cursos, cert
       certificados={certificados}
       setOpen={setOpen} />
   )
-  /*
-  const stepComponents:MyStep[] = [
-    {caption:"Información Básica", component:stepBasicData, optional:false},
-    {caption:"Matricula anterior al 2010", component:stepBefore2010, optional:true, optParam: data.antiguo},
-    {caption:"Información de pago", component:stepFinInfo, optional:false},
-    {caption:"Trabajador UNAC", component:stepUnacWork, optional:true, optParam: data.trabajador}
-  ]
-  */
   const stepComponents:MyStep[] = [
     {caption:"Información Básica", component:stepBasicData, optional:false},
     {caption:"Matricula anterior al 2010", component:stepBefore2010, optional:true, optParam: data.antiguo},
