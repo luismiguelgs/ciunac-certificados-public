@@ -8,7 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 type Props = {
   title:string,
-  content:string,
+  content:string | React.ReactNode,
   open:boolean,
   setOpen:React.Dispatch<React.SetStateAction<boolean>>,
   actions?:boolean

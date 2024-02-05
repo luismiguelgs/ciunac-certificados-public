@@ -5,10 +5,11 @@ import { useMask } from '@react-input/mask';
 import MySnackBar from "./MUI/MySnackBar";
 import TableSimple, { IColumn } from "./start/TableSimple";
 import MySelect from "./MUI/MySelect";
-import { IformData, Irow, Itexto } from "../interfaces/Types";
+import { IformData, Irow } from "../interfaces/Types";
 import { useNavigate } from "react-router-dom";
 import SolicitudesService from "../services/SolicitudesService";
 import { Isolicitud } from "../interfaces/Isolicitud";
+import { useStateContext } from "../context/ContextProvider";
 
 const columns: IColumn[] = [
     { id: 'ciclo', label: 'CICLO', minWidth: 150 },
@@ -23,11 +24,12 @@ type Props = {
     setRows: React.Dispatch<React.SetStateAction<Irow[]>>
     open:boolean,
     setOpen : React.Dispatch<React.SetStateAction<boolean>>
-    textos:Itexto[]
 }
 
-export default function Before2010({ data, rows, setRows, open, setOpen,textos }:Props)
+export default function Before2010({ data, rows, setRows, open, setOpen }:Props)
 {   
+    const { textos } = useStateContext()
+
     //variables de prueba
     let niveles: any[] = []
     let annos: any[] = []

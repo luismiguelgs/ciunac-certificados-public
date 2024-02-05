@@ -1,5 +1,4 @@
 import { Box, Button, Grid, TextField, InputAdornment, Skeleton, Typography } from "@mui/material";
-import {IbasicInfo, IbasicVal} from "../interfaces/IbasicInfo";
 import { useMask } from '@react-input/mask';
 import React, { useState } from 'react'
 import ReCAPTCHA from "react-google-recaptcha";
@@ -10,9 +9,10 @@ import MySnackBar from "../components/MUI/MySnackBar";
 import { EmailIcon, PlayCircleFilledIcon } from "../services/icons";
 import Warning from "../components/start/Warning";
 import { validationBasicData } from "../services/validation";
-import { Icertificado, Itexto } from "../interfaces/Types";
 import { VERSION } from "../services/Constantes";
 import { Isolicitud } from "../interfaces/Isolicitud";
+import { IbasicVal } from "../interfaces/Ivalidation";
+import { useStateContext } from "../context/ContextProvider";
 
 const columns: IColumn[] = [
     { id: 'label', label: 'Certificado', minWidth: 150 },
@@ -20,24 +20,23 @@ const columns: IColumn[] = [
 ];
 
 type Props = {
-    certificados:Icertificado[],
     data:Isolicitud,
     setData: React.Dispatch<React.SetStateAction<Isolicitud>>,
-    textos:Itexto[],
     setTitle: React.Dispatch<React.SetStateAction<string>>,
     setAuth: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
-export default function Start({certificados, data, textos, setData, setTitle, setAuth}:Props)
+export default function Start({ data,  setData, setTitle, setAuth}:Props)
 {
+    const {certificados, textos} = useStateContext()
+
     const navigate = useNavigate()
     const captchaRef = React.useRef<ReCAPTCHA>(null)
     const dniRef = useMask({ mask: '________', replacement: { _: /\d/ } });
     let emailRegex = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/ 
 
-    const [val, setVal] = useState<IbasicVal>({
-        dni:false,email:false
-    })
+    const [val, setVal] = useState<IbasicVal>({dni:false,email:false})
+
     //estado de snackbar informativo
     const [open, setOpen] = useState<boolean>(false);
 
@@ -59,7 +58,6 @@ export default function Start({certificados, data, textos, setData, setTitle, se
         setAuth(true) 
         console.log(data);
         navigate("/proceso")
-        //navigate("/test")
     }
     const handleClick = () => {
         if(validationBasicData(data,setOpen,setVal,emailRegex,captchaRef)){
@@ -127,6 +125,7 @@ export default function Start({certificados, data, textos, setData, setTitle, se
                         checked={data.trabajador}
                         handleChange={handleChangeSwitch}
                         label="Trabajador UNAC"
+                        mensaje="Hacer click si usted es trabajador."
                         name="trabajador" />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -135,6 +134,7 @@ export default function Start({certificados, data, textos, setData, setTitle, se
                         checked={data.antiguo}
                         handleChange={handleChangeSwitch}
                         label="Matriculado anterior al año 2010"
+                        mensaje="Hacer click si usted termino antes del 2010."
                         name="antiguo" />
                 </Grid>
                 <Grid item xs={12} sm={6}>

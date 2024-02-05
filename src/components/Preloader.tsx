@@ -1,16 +1,12 @@
 import React from 'react'
-import { Icurso, Ifacultad, Itexto, Icertificado } from '../interfaces/Types';
 import TypesService from '../services/TypesService';
+import { useStateContext } from '../context/ContextProvider';
 
-type Props = {
-    setCertificados:React.Dispatch<React.SetStateAction<Icertificado[]>>,
-    setTextos:React.Dispatch<React.SetStateAction<Itexto[]>>,
-    setFacultades:React.Dispatch<React.SetStateAction<Ifacultad[]>>
-    setCursos:React.Dispatch<React.SetStateAction<Icurso[]>>
-}
 
-export default function Preloader({setCertificados, setTextos, setFacultades, setCursos}:Props) 
+export default function Preloader() 
 {
+    const { setCertificados, setTextos, setFacultades, setCursos } = useStateContext()
+    
     React.useEffect(()=>{
       TypesService.fetchCertificados(setCertificados)
       TypesService.fetchTextos(setTextos)

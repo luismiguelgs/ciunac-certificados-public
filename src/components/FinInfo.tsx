@@ -5,23 +5,23 @@ import { useMask } from '@react-input/mask';
 import MySnackBar from './MUI/MySnackBar';
 import StorageService from '../services/StorageService';
 import { CloudUploadIcon, FolderIcon } from '../services/icons';
-import { Icertificado, Itexto } from '../interfaces/Types';
 import MySelect from './MUI/MySelect';
 import { Isolicitud } from '../interfaces/Isolicitud';
 import { IfinVal } from '../interfaces/Ivalidation';
+import { useStateContext } from '../context/ContextProvider';
 
 type Props = {
     data: Isolicitud,
     setData: React.Dispatch<React.SetStateAction<Isolicitud>>,
     validation: IfinVal,
     open:boolean,
-    textos:Itexto[],
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    certificados : Icertificado[]
 }
 
-export default function FinInfo({data, setData, validation, open, setOpen, textos, certificados}:Props)
+export default function FinInfo({data, setData, validation, open, setOpen}:Props)
 {
+    const {textos, certificados} = useStateContext()
+
     const [file,setFile] = React.useState<any>([])
     const [progress, setProgress] = React.useState<number>(0)
     const [enviar, setEnviar] = React.useState<boolean>(true)
@@ -98,6 +98,16 @@ export default function FinInfo({data, setData, validation, open, setOpen, texto
                         disabled={enviar}>
                         Subir Archivo
                     </Button>
+                    <MySelect 
+                        sx={{mt:2,width:'80%'}}
+                        handleChange={e=>handleChange(e)}
+                        name='pago'
+                        error={validation.pago}
+                        value={data.pago}
+                        label='Monto pagado'
+                        helperText={validation.pago && "Ingrese el monto pagado / monto inválido"}
+                        data={myData}
+                    />
                     <TextField
                         autoComplete='off'
                         inputRef={voucherRef}
@@ -110,16 +120,7 @@ export default function FinInfo({data, setData, validation, open, setOpen, texto
                         label="Número de Voucher"
                         helperText={ validation.voucher && "Ingrese el número de voucher"}
                     />
-                    <MySelect 
-                        sx={{mt:2,width:'80%'}}
-                        handleChange={e=>handleChange(e)}
-                        name='pago'
-                        error={validation.pago}
-                        value={data.pago}
-                        label='Monto pagado'
-                        helperText={validation.pago && "Ingrese el monto pagado / monto inválido"}
-                        data={myData}
-                    />
+                    
                     <TextField
                         type='date'
                         sx={{mt:2, width:'80%'}}
@@ -134,11 +135,12 @@ export default function FinInfo({data, setData, validation, open, setOpen, texto
                     />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    <Card sx={{ maxWidth: 345, p:2 }}>
+                    <Card sx={{ p:2 }}>
                         <CardMedia
                             component="img"
                             alt="documento"
                             image={data.voucher}
+                            style={{width:'70%',margin: '0 auto'}}
                         />
                         <CardContent>
                         </CardContent>

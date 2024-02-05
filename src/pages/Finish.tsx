@@ -1,17 +1,15 @@
 import React from "react"
 import { Box, Button, Alert } from '@mui/material'
-import {IbasicInfo} from "../interfaces/IbasicInfo"
-import { IstudentData } from "../interfaces/IstudentData"
-import { IfinData } from "../interfaces/IfinData"
 import DataDisplay from "../components/DataDisplay"
 import PDFService from "../services/PdfService"
 import SolicitudesService from "../services/SolicitudesService"
 import pdf from '../assets/pdf.png'
 import MySwitch from "../components/MUI/MySwitch"
 import DialogAlert from "../components/MUI/DialogAlert"
-import { Irow, Itexto } from "../interfaces/Types"
+import { Irow } from "../interfaces/Types"
 import { ArrowBackIcon, AssignmentTurnedInIcon, CloudDownloadIcon } from "../services/icons"
 import { Isolicitud } from "../interfaces/Isolicitud"
+import { useStateContext } from "../context/ContextProvider"
 
 type Props = {
   handleReset?: React.MouseEventHandler
@@ -19,15 +17,16 @@ type Props = {
   setActiveStep:React.Dispatch<React.SetStateAction<number>>
   constancia:string,
   data2010:Irow[],
-  textos:Itexto[]
 }
 interface Condiciones{
   data:boolean,
   aceptar:boolean
 }
 
-export default function Finish({ data, setActiveStep, constancia, data2010, textos }:Props)
+export default function Finish({ data, setActiveStep, constancia, data2010 }:Props)
 {
+  const { textos } = useStateContext()
+
   const [success,setSuccess] = React.useState<boolean>(false)
   const [loading, setLoading] = React.useState<boolean>(false)
 

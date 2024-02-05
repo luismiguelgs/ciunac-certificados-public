@@ -1,6 +1,3 @@
-import { IbasicInfo } from '../interfaces/IbasicInfo';
-import { IfinData } from '../interfaces/IfinData';
-import { IstudentData } from '../interfaces/IstudentData';
 import { firestore } from '../services/firebase';
 import { collection, query, where, getDocs ,serverTimestamp, addDoc, orderBy} from 'firebase/firestore'
 import { changeDate } from './util';

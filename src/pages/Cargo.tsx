@@ -3,14 +3,12 @@ import React from 'react'
 import { useLocation } from 'react-router-dom'
 import pdf from '../assets/pdf.png'
 import PDFService from '../services/PdfService';
-import { Itexto } from '../interfaces/Types';
+import { useStateContext } from '../context/ContextProvider';
 
-type Props = {
-  textos:Itexto[]
-}
 
-export default function Cargo({textos}:Props) 
+export default function Cargo() 
 {
+    const {textos} = useStateContext()
     const location = useLocation()
     const data = location.state?.data || []
 

@@ -28,6 +28,9 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import FolderIcon from '@mui/icons-material/Folder';
+import MenuIcon from '@mui/icons-material/Menu';
+import MailIcon from '@mui/icons-material/Mail';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 export {
   TextSnippetIcon,
@@ -59,5 +62,8 @@ export {
   ArrowForwardIcon,
   AssignmentTurnedInIcon,
   CloudUploadIcon,
-  FolderIcon
+  FolderIcon,
+  MenuIcon,
+  MailIcon,
+  NotificationsIcon
 }

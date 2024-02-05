@@ -6,25 +6,24 @@ import UnacWork from '../components/UnacWork'
 import FinInfo from '../components/FinInfo'
 import Before2010 from '../components/Before2010'
 import { validationFinData, validationStudentData } from '../services/validation'
-import { Icurso, Ifacultad, Itexto, Irow, Icertificado } from '../interfaces/Types'
+import { Irow } from '../interfaces/Types'
 import MyStepper, { MyStep } from '../components/MUI/MyStepper'
 import { Isolicitud } from '../interfaces/Isolicitud'
 import uploadLogo from '../assets/upload.svg'
 import { IfinVal, IstudentVal } from '../interfaces/Ivalidation'
+import { useStateContext } from '../context/ContextProvider'
 
 type Props = {
   data: Isolicitud,
   setData: React.Dispatch<React.SetStateAction<Isolicitud>>,
-  textos:Itexto[],
-  facultades:Ifacultad[],
-  cursos:Icurso[],
-  certificados: Icertificado[]
 }
 
-export default function Proceso({data, setData, textos, facultades, cursos, certificados}:Props)
+export default function Proceso({data, setData}:Props)
 {
-  //página de datos básicos ******************************************************************************
+  const {textos, certificados} = useStateContext()
   const [open, setOpen] = React.useState(false); //snackbar
+
+  //página de datos básicos ******************************************************************************
   const [basicVal, setBasicVal] = React.useState<IstudentVal>({apellidos:false, nombres:false, celular:false, codigo:false})
   //datos de alumno unac
   const [checked, setChecked] = React.useState<boolean>(false)
@@ -46,7 +45,6 @@ export default function Proceso({data, setData, textos, facultades, cursos, cert
   const [constanciaTU, setConstanciaTU] = React.useState<string>(uploadLogo)
 
   const validateUnacWork = () =>{
-    console.log(constanciaTU);
     if(constanciaTU === uploadLogo){
       setOpen(true)
       return false
@@ -117,19 +115,15 @@ export default function Proceso({data, setData, textos, facultades, cursos, cert
     <Finish
       setActiveStep={setActiveStep}
       data={data} 
-      textos={textos}
       constancia={constanciaTU}
       data2010={rows} />
   )
   const stepBasicData = (
     <BasicData
-      facultades={facultades}
       data={data} 
-      cursos={cursos}
       setData={setData}
       validation={basicVal} 
       checked={checked}
-      textos={textos}
       open={open}
       setOpen={setOpen}
       setChecked={setChecked} />
@@ -148,7 +142,6 @@ export default function Proceso({data, setData, textos, facultades, cursos, cert
       data={data} 
       rows={rows} 
       setRows={setRows}
-      textos={textos}
       open={open}
       setOpen={setOpen} />
   )
@@ -157,9 +150,7 @@ export default function Proceso({data, setData, textos, facultades, cursos, cert
       data={data}
       setData={setData}
       validation={finVal}
-      textos={textos}
       open={open}
-      certificados={certificados}
       setOpen={setOpen} />
   )
   const stepComponents:MyStep[] = [

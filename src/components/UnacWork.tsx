@@ -68,11 +68,12 @@ export default function UnacWork({imagen, setConstancia, open, setOpen, data, te
                     </Alert>
                 </Grid>
                 <Grid item xs={12} sm={6} >
-                    <Card sx={{ maxWidth: 345, p:2 }}>
+                    <Card sx={{ p:2 }}>
                         <CardMedia
                             component="img"
                             alt="documento"
                             image={imagen}
+                            style={{width:'70%',margin: '0 auto'}}
                         />
                         <CardContent>
                         </CardContent>

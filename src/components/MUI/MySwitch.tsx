@@ -7,9 +7,10 @@ type Props = {
   checked : boolean,
   handleChange?: ((event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => void) | undefined
   disabled?: boolean
+  sx?: any
 }
 
-export default function MySwitch({name,label,checked,handleChange, disabled=false}:Props) 
+export default function MySwitch({name,label,checked,handleChange, disabled=false, sx={}}:Props) 
 {
 
   return (
@@ -21,6 +22,7 @@ export default function MySwitch({name,label,checked,handleChange, disabled=fals
             onChange={handleChange} 
             checked={checked} 
             name={name}
+            sx={sx}
           />
         }
         label={label}

@@ -2,12 +2,12 @@ import { TextField, InputAdornment, Grid, Alert, Box } from '@mui/material'
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { NIVEL} from '../services/Constantes';
 import { useMask } from '@react-input/mask';
-import { IstudentVal } from '../interfaces/IstudentData';
 import MySnackBar from './MUI/MySnackBar';
 import MySelect from './MUI/MySelect';
 import MySwitch from './MUI/MySwitch';
-import { Icurso, Ifacultad, Itexto } from '../interfaces/Types';
 import { Isolicitud } from '../interfaces/Isolicitud';
+import { IstudentVal } from '../interfaces/Ivalidation';
+import { useStateContext } from '../context/ContextProvider';
 
 type Props = {
     data: Isolicitud,
@@ -15,15 +15,14 @@ type Props = {
     validation:IstudentVal,
     checked:boolean,
     setChecked:React.Dispatch<React.SetStateAction<boolean>>,
-    textos:Itexto[],
-    facultades:Ifacultad[],
-    cursos:Icurso[],
     open:boolean,
     setOpen:React.Dispatch<React.SetStateAction<boolean>>,
 }
 
-export default function BasicData({data, setData, validation,checked,setChecked,textos,facultades, cursos, open,  setOpen}:Props)
+export default function BasicData({data, setData, validation,checked,setChecked, open,  setOpen}:Props)
 {
+    const {textos, facultades, cursos} = useStateContext()
+
     const apellidoRef = useMask({ mask: '________________________________________', replacement: { _: /^[a-zA-Z \u00C0-\u00FF]*$/ } })
     const nombreRef = useMask({ mask: '________________________________________', replacement: { _: /^[a-zA-Z \u00C0-\u00FF]*$/ } })
     const celularRef = useMask({ mask: '___-___-___', replacement: { _: /\d/ } });
