@@ -1,15 +1,15 @@
 import { Box, TextField, Button, Alert } from "@mui/material"
 import React from "react"
-import { MES, CICLOS }  from '../services/Constantes'
+import { MES, CICLOS }  from '../../services/Constantes'
 import { useMask } from '@react-input/mask';
-import MySnackBar from "./MUI/MySnackBar";
-import TableSimple, { IColumn } from "./start/TableSimple";
-import MySelect from "./MUI/MySelect";
-import { IformData, Irow } from "../interfaces/Types";
+import MySnackBar from "../MUI/MySnackBar";
+import TableSimple, { IColumn } from "../Start/TableSimple";
+import MySelect from "../MUI/MySelect";
+import { IformData, Irow } from "../../interfaces/Types";
 import { useNavigate } from "react-router-dom";
-import SolicitudesService from "../services/SolicitudesService";
-import { Isolicitud } from "../interfaces/Isolicitud";
-import { useStateContext } from "../context/ContextProvider";
+import SolicitudesService from "../../services/SolicitudesService";
+import { Isolicitud } from "../../interfaces/Isolicitud";
+import { useStateContext } from "../../context/ContextProvider";
 
 const columns: IColumn[] = [
     { id: 'ciclo', label: 'CICLO', minWidth: 150 },
@@ -34,7 +34,7 @@ export default function Before2010({ data, rows, setRows, open, setOpen }:Props)
     let niveles: any[] = []
     let annos: any[] = []
 
-    // Validar si hay registros anteior *****************************************************************
+    // Validar si hay registros anteior ****************************************************************************
     const navigate = useNavigate()
     React.useEffect(()=>{
         const fetchData = async() =>{
@@ -48,7 +48,7 @@ export default function Before2010({ data, rows, setRows, open, setOpen }:Props)
         }
         fetchData()
     },[])
-
+    //************************Poblar Selects ******************************************************************************* */
     const poblarAnnos = () =>{
         for (let index = 2000; index < 2010; index++) {
            annos.push({value:index, label:index.toString()})

@@ -3,14 +3,13 @@ import { useMask } from '@react-input/mask';
 import React, { useState } from 'react'
 import ReCAPTCHA from "react-google-recaptcha";
 import { useNavigate } from "react-router-dom";
-import TableSimple, { IColumn } from "../components/start/TableSimple";
+import TableSimple, { IColumn } from "../components/Start/TableSimple";
 import MySelect from "../components/MUI/MySelect";
 import MySnackBar from "../components/MUI/MySnackBar";
 import { EmailIcon, PlayCircleFilledIcon } from "../services/icons";
-import Warning from "../components/start/Warning";
+import Warning from "../components/Start/Warning";
 import { validationBasicData } from "../services/validation";
 import { VERSION } from "../services/Constantes";
-import { Isolicitud } from "../interfaces/Isolicitud";
 import { IbasicVal } from "../interfaces/Ivalidation";
 import { useStateContext } from "../context/ContextProvider";
 
@@ -20,15 +19,13 @@ const columns: IColumn[] = [
 ];
 
 type Props = {
-    data:Isolicitud,
-    setData: React.Dispatch<React.SetStateAction<Isolicitud>>,
     setTitle: React.Dispatch<React.SetStateAction<string>>,
     setAuth: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
-export default function Start({ data,  setData, setTitle, setAuth}:Props)
+export default function Start({ setTitle, setAuth}:Props)
 {
-    const {certificados, textos} = useStateContext()
+    const {certificados, textos, data, setData} = useStateContext()
 
     const navigate = useNavigate()
     const captchaRef = React.useRef<ReCAPTCHA>(null)
@@ -52,17 +49,15 @@ export default function Start({ data,  setData, setTitle, setAuth}:Props)
     };
 
     //iniciar proceso
-    const startProcess = () =>{
-        const _title = data.solicitud.split('_')
-        setTitle(_title[0] + ' ' + _title[1] + ' ' + _title[2])
-        setAuth(true) 
-        console.log(data);
-        navigate("/proceso")
-    }
     const handleClick = () => {
-        if(validationBasicData(data,setOpen,setVal,emailRegex,captchaRef)){
-            startProcess()
+        if(validationBasicData(data,setVal,emailRegex,captchaRef)){
+            const _title = data.solicitud.split('_')
+            setTitle(_title[0] + ' ' + _title[1] + ' ' + _title[2])
+            setAuth(true) 
+            setOpen(false)
+            navigate("/proceso")
         }
+        setOpen(true)
         return
     }
     //Recaptcha

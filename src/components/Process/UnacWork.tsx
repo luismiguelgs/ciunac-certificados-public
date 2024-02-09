@@ -1,11 +1,11 @@
 import { Box, Alert, Button, LinearProgress, Card, CardMedia, CardContent, Grid } from '@mui/material'
-import { VisuallyHiddenInput } from '../services/Constantes';
+import { VisuallyHiddenInput } from '../../services/Constantes';
 import React from 'react';
-import MySnackBar from './MUI/MySnackBar';
-import StorageService from '../services/StorageService';
-import { CloudUploadIcon, FolderIcon } from '../services/icons';
-import { Itexto } from '../interfaces/Types';
-import { Isolicitud } from '../interfaces/Isolicitud';
+import MySnackBar from '../MUI/MySnackBar';
+import StorageService from '../../services/StorageService';
+import { CloudUploadIcon, FolderIcon } from '../../services/icons';
+import { Itexto } from '../../interfaces/Types';
+import { Isolicitud } from '../../interfaces/Isolicitud';
 
 type Props = {
     data: Isolicitud,

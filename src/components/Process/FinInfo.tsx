@@ -1,14 +1,14 @@
 import { Box, Alert, Button, TextField,Grid, LinearProgress, Card, CardMedia, CardContent } from '@mui/material'
-import { VisuallyHiddenInput } from '../services/Constantes';
+import { VisuallyHiddenInput } from '../../services/Constantes';
 import React from 'react';
 import { useMask } from '@react-input/mask';
-import MySnackBar from './MUI/MySnackBar';
-import StorageService from '../services/StorageService';
-import { CloudUploadIcon, FolderIcon } from '../services/icons';
-import MySelect from './MUI/MySelect';
-import { Isolicitud } from '../interfaces/Isolicitud';
-import { IfinVal } from '../interfaces/Ivalidation';
-import { useStateContext } from '../context/ContextProvider';
+import MySnackBar from '../MUI/MySnackBar';
+import StorageService from '../../services/StorageService';
+import { CloudUploadIcon, FolderIcon } from '../../services/icons';
+import MySelect from '../MUI/MySelect';
+import { Isolicitud } from '../../interfaces/Isolicitud';
+import { IfinVal } from '../../interfaces/Ivalidation';
+import { useStateContext } from '../../context/ContextProvider';
 
 type Props = {
     data: Isolicitud,

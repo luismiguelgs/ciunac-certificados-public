@@ -1,26 +1,21 @@
 import { Box } from '@mui/material'
 import React from 'react'
-import Finish from './Finish'
-import BasicData from '../components/BasicData'
-import UnacWork from '../components/UnacWork'
-import FinInfo from '../components/FinInfo'
-import Before2010 from '../components/Before2010'
+import Finish from '../components/Process/Finish'
+import BasicData from '../components/Process/BasicData'
+import UnacWork from '../components/Process/UnacWork'
+import FinInfo from '../components/Process/FinInfo'
+import Before2010 from '../components/Process/Before2010'
 import { validationFinData, validationStudentData } from '../services/validation'
 import { Irow } from '../interfaces/Types'
 import MyStepper, { MyStep } from '../components/MUI/MyStepper'
-import { Isolicitud } from '../interfaces/Isolicitud'
 import uploadLogo from '../assets/upload.svg'
 import { IfinVal, IstudentVal } from '../interfaces/Ivalidation'
 import { useStateContext } from '../context/ContextProvider'
 
-type Props = {
-  data: Isolicitud,
-  setData: React.Dispatch<React.SetStateAction<Isolicitud>>,
-}
-
-export default function Proceso({data, setData}:Props)
+export default function Proceso()
 {
-  const {textos, certificados} = useStateContext()
+  const {textos, certificados,data, setData} = useStateContext()
+  
   const [open, setOpen] = React.useState(false); //snackbar
 
   //página de datos básicos ******************************************************************************
@@ -82,11 +77,13 @@ export default function Proceso({data, setData}:Props)
     //validar antes de pasar al proceso siguiente
     switch (activeStep) {
       case 0:
-        if (validationStudentData(data,setOpen,checked,setBasicVal)) {
+        if (validationStudentData(data,checked,setBasicVal)) {
           if(!checked) setData((prevFormData)=>({...prevFormData, facultad:''}))
-          console.log(data);
+          setOpen(false)
           setActiveStep((prevActiveStep) => prevActiveStep + 1)
           setSkipped(newSkipped)
+        } else{
+          setOpen(true)
         }
       break;
       case 1:
@@ -96,9 +93,12 @@ export default function Proceso({data, setData}:Props)
         }
       break
       case 2:
-        if (validationFinData(data,setOpen,setFinVal)) {
+        if (validationFinData(data,setFinVal)) {
+          setOpen(false)
           setActiveStep((prevActiveStep) => prevActiveStep + 1)
           setSkipped(newSkipped)
+        }else{
+          setOpen(true)
         }
       break
       case 3:

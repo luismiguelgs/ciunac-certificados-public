@@ -1,5 +1,5 @@
 import { Grid, Typography } from '@mui/material'
-import { Isolicitud } from '../interfaces/Isolicitud'
+import { Isolicitud } from '../../interfaces/Isolicitud'
 
 type Props = {
     data:Isolicitud

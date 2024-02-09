@@ -1,13 +1,13 @@
 import { TextField, InputAdornment, Grid, Alert, Box } from '@mui/material'
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import { NIVEL} from '../services/Constantes';
+import { NIVEL} from '../../services/Constantes';
 import { useMask } from '@react-input/mask';
-import MySnackBar from './MUI/MySnackBar';
-import MySelect from './MUI/MySelect';
-import MySwitch from './MUI/MySwitch';
-import { Isolicitud } from '../interfaces/Isolicitud';
-import { IstudentVal } from '../interfaces/Ivalidation';
-import { useStateContext } from '../context/ContextProvider';
+import MySnackBar from '../MUI/MySnackBar';
+import MySelect from '../MUI/MySelect';
+import MySwitch from '../MUI/MySwitch';
+import { Isolicitud } from '../../interfaces/Isolicitud';
+import { IstudentVal } from '../../interfaces/Ivalidation';
+import { useStateContext } from '../../context/ContextProvider';
 
 type Props = {
     data: Isolicitud,
