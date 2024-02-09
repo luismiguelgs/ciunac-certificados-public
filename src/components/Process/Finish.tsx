@@ -1,5 +1,5 @@
 import React from "react"
-import { Box, Button, Alert } from '@mui/material'
+import { Box, Button, Alert, Grid } from '@mui/material'
 import DataDisplay from "../Finish/DataDisplay"
 import SolicitudesService from "../../services/SolicitudesService"
 import { Irow } from "../../interfaces/Types"
@@ -57,36 +57,41 @@ export default function Finish({ data, setActiveStep, constancia, data2010 }:Pro
 				{textos.find(objeto=> objeto.titulo === 'texto_1_final')?.texto}
 			</Alert>
 			<DataDisplay data={data}/>
-			<SwitchResaltado
-				checked={condiciones.data}
-				mensaje='Marcar si los datos indicados lineas arriba son los correctos' 
-				label="Los datos proporcionados son los correctos"
-				name="data" 
-				handleChange={handleChangeSwitch}
-				fullWidth={true}/>
+			<Grid container spacing={1} justifyContent='center'>
+				<Grid item xs={6}>
+					<SwitchResaltado
+					checked={condiciones.data}
+					mensaje='Marcar si los datos indicados lineas arriba son los correctos' 
+					label="Los datos proporcionados son los correctos"
+					name="data" 
+					handleChange={handleChangeSwitch}
+					fullWidth={true}/>
+				</Grid>
+				<Grid item xs={6}>
+					<SwitchResaltado
+						checked={condiciones.aceptar}
+						mensaje='Marcar si acepta todos los términos y condiciones líneas abajo' 
+						label="Acepta todos los términos y condiciones"
+						name="aceptar" 
+						handleChange={handleChangeSwitch}
+						fullWidth={true}/>
+				</Grid>
+			</Grid>
 			<Disclamer />
 			<Box sx={{display:'flex',flexDirection:'column',pt:2}}>
-			<SwitchResaltado
-				checked={condiciones.aceptar}
-				mensaje='Marcar si acepta todos los términos y condiciones líneas arriba' 
-				label="Acepta todos los términos y condiciones"
-				name="aceptar" 
-				handleChange={handleChangeSwitch}
-				fullWidth={true}/>
-
 				<Box sx={{flex: '1 1 auto'}}>
-							<Button color='primary' onClick={handleBack} sx={{mr:1}} variant="outlined" startIcon={<ArrowBackIcon />}>
-								REGRESAR
-							</Button>
-							<Button 
-								disabled={!(condiciones.data && condiciones.aceptar)} color='primary' 
-								onClick={()=>setOpen(true)} 
-								sx={{mr:1}} 
-								variant="outlined"
-								endIcon={<AssignmentTurnedInIcon />}>
-									FINALIZAR
-							</Button>
-						</Box>	
+					<Button color='primary' onClick={handleBack} sx={{mr:1}} variant="outlined" startIcon={<ArrowBackIcon />}>
+					REGRESAR
+					</Button>
+					<Button 
+						disabled={!(condiciones.data && condiciones.aceptar)} color='primary' 
+						onClick={()=>setOpen(true)} 
+						sx={{mr:1}} 
+						variant="outlined"
+						endIcon={<AssignmentTurnedInIcon />}>
+							FINALIZAR
+					</Button>
+				</Box>	
 			</Box>
 			<MyDialog 
 				type="ALERT"
