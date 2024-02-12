@@ -11,6 +11,7 @@ import MyStepper, { MyStep } from '../components/MUI/MyStepper'
 import uploadLogo from '../assets/upload.svg'
 import { IfinVal, IstudentVal } from '../interfaces/Ivalidation'
 import { useStateContext } from '../context/ContextProvider'
+import Manual from '../components/Manual'
 
 export default function Proceso()
 {
@@ -178,6 +179,7 @@ export default function Proceso()
           handleNext={handleNext}
           stepFinish={stepFinish}
         />
+        <Manual />
     </Box>
   )
 }

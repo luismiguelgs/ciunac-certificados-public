@@ -12,6 +12,7 @@ import { validationBasicData } from "../services/validation";
 import { VERSION } from "../services/Constantes";
 import { IbasicVal } from "../interfaces/Ivalidation";
 import { useStateContext } from "../context/ContextProvider";
+import Manual from "../components/Manual";
 
 const columns: IColumn[] = [
     { id: 'label', label: 'Certificado', minWidth: 150 },
@@ -150,6 +151,7 @@ export default function Start({ setTitle, setAuth}:Props)
                 content="Ingresar los datos solicitados"
                 setOpen={setOpen}
                 severity="error" />
+            <Manual />
         </Box>
     )
 }

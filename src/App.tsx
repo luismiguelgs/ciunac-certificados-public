@@ -11,7 +11,6 @@ import Reporte from './pages/Reporte'
 import MyAppBar, { IconMenu } from './components/MUI/MyAppBar'
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { useStateContext } from './context/ContextProvider'
-import Manual from "./components/Manual";
 import Finish from './pages/Finish'
 
 function App() 
@@ -48,7 +47,7 @@ function App()
                 <Route path="*" element={<div><p>Página no disponible: 404!</p><Link to={'/'} >Inicio</Link></div>} />
           </Routes>
         </BrowserRouter>
-        <Manual />
+        
     </Box>
   )
 }
