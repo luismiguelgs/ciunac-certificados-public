@@ -12,6 +12,8 @@ import MyAppBar, { IconMenu } from './components/MUI/MyAppBar'
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { useStateContext } from './context/ContextProvider'
 import Finish from './pages/Finish'
+import Consulta from './pages/Consulta'
+import ConsultaDetalle from './pages/ConsultaDetalle'
 
 function App() 
 {
@@ -42,8 +44,10 @@ function App()
                     <Route path='/proceso' element={<Proceso />} />
                     <Route path='/cargo' element={<Cargo />} />
                     <Route path='/final' element={<Finish />} />
+                    <Route path='/consulta-detalle' element={<ConsultaDetalle />} />
                 </Route>
                 <Route path='/reporte' element={<Reporte />} />
+                <Route path='/consulta' element={<Consulta setAuth={setAuth} />} />
                 <Route path="*" element={<div><p>Página no disponible: 404!</p><Link to={'/'} >Inicio</Link></div>} />
           </Routes>
         </BrowserRouter>

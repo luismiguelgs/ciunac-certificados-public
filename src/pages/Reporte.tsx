@@ -29,7 +29,7 @@ export default function Reporte()
                     Lista de certificados listos para recoger en mesa de partes, si figura su nombre y apellido ya se puede acercar.
                 </Alert>
                 <FiltroNombre data={tempData} setData={setTempData} aux={data}/>
-                <DataTable columns={columns} rows={tempData} />
+                <DataTable columns={columns} rows={tempData} pagination={false} />
             </div>
             )}
         </React.Fragment>

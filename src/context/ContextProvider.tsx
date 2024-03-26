@@ -26,7 +26,7 @@ export const ContextProvider = ({children}:React.PropsWithChildren<{}>) =>
     const [textos, setTextos] = React.useState<Itexto[]>([])
     const [facultades, setFacultades] = React.useState<Ifacultad[]>([])
     const [cursos, setCursos] = React.useState<Icurso[]>([])
-    const [openManual, setOpenManual] = React.useState<boolean>(true);
+    const [openManual, setOpenManual] = React.useState<boolean>(false);
 
     const [data, setData] = React.useState<Isolicitud>({
         solicitud:'CERTIFICADO_DE_ESTUDIO',

@@ -21,6 +21,24 @@ export default class SolicitudesService
         }));
     }
 
+    public static async getItem(dni:string)
+    {
+        const q = query(
+            this.db,
+            where('dni','==',dni) , 
+            orderBy('creado','desc')
+        )
+        // Obtenemos los documentos que cumplen la consulta
+        const  querySnapshot = await getDocs(q)
+
+        // Devolvemos un array con los datos de los documentos, incluyendo el ID
+        return querySnapshot.docs.map((doc) => {
+            const data = doc.data();
+            // Agregamos el campo 'id' al objeto data
+            data.id = doc.id;
+            return data;
+        });
+    }
     public static async fetchRecord(idioma:string,nivel:string,dni:string,solicitud:string){
         const q = query(
             this.db,

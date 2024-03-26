@@ -20,6 +20,7 @@ export interface IColumn {
 type Props = {
     rows:any[],
     columns:IColumn[],
+    pagination:boolean
 }
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -34,7 +35,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 
 
-export default function DataTable({rows, columns}:Props) {
+export default function DataTable({rows, columns, pagination = true}:Props) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -88,16 +89,20 @@ export default function DataTable({rows, columns}:Props) {
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        labelRowsPerPage='Filas por página'
-      />
+      {
+		pagination && (
+			<TablePagination
+				rowsPerPageOptions={[5, 10, 25]}
+				component="div"
+				count={rows.length}
+				rowsPerPage={rowsPerPage}
+				page={page}
+				onPageChange={handleChangePage}
+				onRowsPerPageChange={handleChangeRowsPerPage}
+				labelRowsPerPage='Filas por página'
+      		/>
+		)        
+      }
     </Paper>
   );
 }

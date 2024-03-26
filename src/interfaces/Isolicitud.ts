@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 export interface Isolicitud {
     id?:string,
     solicitud:string,
@@ -19,5 +21,5 @@ export interface Isolicitud {
     voucher?:string,
     estado?:string,
     pago:string,
-    creado?:string
+    creado?:string | Timestamp
 }
