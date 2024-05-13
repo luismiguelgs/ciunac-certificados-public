@@ -10,7 +10,6 @@ import SolicitudesService from '../services/SolicitudesService';
 import { Isolicitud } from '../interfaces/Isolicitud';
 import { useNavigate } from 'react-router-dom';
 
-
 type Buscar = {
     dni: string,
     remember: boolean

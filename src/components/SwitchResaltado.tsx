@@ -23,8 +23,8 @@ export default function SwitchResaltado({mensaje,checked, label, name, handleCha
     const borderColor = '#03a9f4'
 
     const sx = fullWidth ? 
-        {flex: '1 1 auto', backgroundColor: backColor, borderRadius: '8px', padding: '16px', m:1, border: `2px solid ${borderColor}`} :
-        { backgroundColor: backColor, borderRadius: '8px', padding: '16px', m:1, border: `2px solid ${borderColor}`}
+        {flex: '1 1 auto', backgroundColor: backColor, borderRadius: '8px', padding: '8px', m:1, border: `2px solid ${borderColor}`} :
+        { backgroundColor: backColor, borderRadius: '8px', padding: '8px', m:1, border: `2px solid ${borderColor}`}
 
     return (
         <React.Fragment>

@@ -46,12 +46,6 @@ export default function Cargo()
             <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                 {data.map((item:any)=>(
                     <div key={item.id}  style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        {/**
-                         * 
-                        <a href='https://www.google.com' target="_blank" rel="noopener noreferrer">
-                            <img src={pdf} alt={item.id}  width='50px' style={{margin:'5px'}} ></img>
-                        </a>
-                        */}
                         <img src={pdf} alt={item.id}  width='50px' style={{margin:'5px', cursor:'pointer'}} onClick={()=>descargarPDF(item)} ></img>
                         <Button size="large" onClick={()=>descargarPDF(item)}>{`${item.dni}-${item.idioma}-${item.nivel}.PDF`}</Button>
                     </div>

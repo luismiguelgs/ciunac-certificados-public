@@ -18,9 +18,7 @@ export default function Warning({texto,checked,label,name,handleChange,mensaje}:
             {
                 texto ? (
                 <div>
-                    <Alert severity="warning"
-                        aria-haspopup="true"
-                    >
+                    <Alert severity="warning" aria-haspopup="true" sx={{minHeight:'95px'}}>
                         {texto}
                     </Alert>
                     <SwitchResaltado mensaje={mensaje} checked={checked} label={label} name={name} handleChange={handleChange} />

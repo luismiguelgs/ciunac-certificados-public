@@ -1,4 +1,4 @@
-import { Box, Button, Grid, TextField, InputAdornment, Skeleton, Typography } from "@mui/material";
+import { Box, Button, Grid, TextField, InputAdornment, Skeleton } from "@mui/material";
 import { useMask } from '@react-input/mask';
 import React, { useState } from 'react'
 import ReCAPTCHA from "react-google-recaptcha";
@@ -9,10 +9,10 @@ import MySnackBar from "../components/MUI/MySnackBar";
 import { EmailIcon, PlayCircleFilledIcon } from "../services/icons";
 import Warning from "../components/Start/Warning";
 import { validationBasicData } from "../services/validation";
-import { VERSION } from "../services/Constantes";
 import { IbasicVal } from "../interfaces/Ivalidation";
 import { useStateContext } from "../context/ContextProvider";
 import Manual from "../components/Manual";
+import Copyright from "../components/Start/Copyright";
 
 const columns: IColumn[] = [
     { id: 'label', label: 'Certificado', minWidth: 150 },
@@ -134,16 +134,16 @@ export default function Start({ setTitle, setAuth}:Props)
                         name="antiguo" />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    <Box sx={{ alignContent:'center',alignItems:'center', p:3, display:'flex', flexDirection:'column'}} >
+                    <Box sx={{ alignContent:'center',alignItems:'center', p:1, display:'flex', flexDirection:'column'}} >
                         <ReCAPTCHA sitekey={import.meta.env.VITE_APP_SITE_KEY} onChange={onChange} ref={captchaRef} />
-                        <Button onClick={handleClick} variant="contained" size="large" endIcon={<PlayCircleFilledIcon />} sx={{m:3}}>
+                        <Button onClick={handleClick} variant="contained" size="large" endIcon={<PlayCircleFilledIcon />} sx={{m:2}}>
                             Avanzar
                         </Button>
                     </Box>
+                    <Copyright />
                 </Grid>
                 <Grid item xs={12}  sm={6}>
                     <TableSimple columns={columns} rows={certificados} action={false} />
-                    <Typography variant="caption" display="block" gutterBottom>version: {VERSION}</Typography>
                 </Grid>
             </Grid>
             <MySnackBar 

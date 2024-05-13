@@ -1,6 +1,6 @@
 import { firestore } from '../services/firebase';
 import { collection, query, where, getDocs ,serverTimestamp, addDoc, orderBy} from 'firebase/firestore'
-import { changeDate } from './util';
+import { changeDate, obtenerPeriodo } from './util';
 import { Isolicitud } from '../interfaces/Isolicitud';
 import { Irow } from '../interfaces/Types';
 
@@ -80,6 +80,7 @@ export default class SolicitudesService
             numero_voucher:data.numero_voucher,
             fecha_pago: data.fecha_pago,
             manual:false,
+            periodo: obtenerPeriodo(),
             creado:serverTimestamp(),
             modificado:serverTimestamp()
         }
